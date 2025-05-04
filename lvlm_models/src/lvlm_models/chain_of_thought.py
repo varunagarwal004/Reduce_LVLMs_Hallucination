@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Optional, Tuple
 
+import pandas as pd
 from datasets import load_dataset
 from PIL import Image
 
@@ -53,29 +54,14 @@ class ChainOfThoughtLlava:
             elif cot_strategy == "visual_puzzle":
                 self.cot_prompt = (
                     "I'll solve this visual puzzle by applying a systematic reasoning approach:\n\n"
-                    "1. PUZZLE IDENTIFICATION:\n"
-                    "   - What type of puzzle is presented? (pattern, sequence, transformation, "
-                    "analogy, etc.)\n"
-                    "   - What are the core elements and their arrangement?\n\n"
-                    "2. PATTERN RECOGNITION:\n"
-                    "   - What patterns, sequences, or relationships exist between elements?\n"
-                    "   - Are there visual transformations (rotation, reflection, scaling)?\n"
-                    "   - Is there a logical progression or rule being followed?\n\n"
-                    "3. REASONING APPLICATION:\n"
-                    "   - ALGORITHMIC: If sequential, what mathematical or logical operation "
-                    "connects elements?\n"
-                    "   - ANALOGICAL: If X:Y::Z:?, what relationship exists between X&Y that I can "
-                    "apply to Z?\n"
-                    "   - DEDUCTIVE: What must be true based on the given visual premises?\n"
-                    "   - INDUCTIVE: What general rule can be inferred from the specific "
-                    "examples?\n"
-                    "   - SPATIAL: How do the spatial arrangements inform the solution?\n\n"
-                    "4. TESTING EACH OPTION:\n"
+                    "1. IDENTIFY THE 4 OPTIONS:\n"
+                    "   - Identify the 4 options available as possible answers.\n"
+                    "2. TESTING EACH OPTION:\n"
                     "   - Systematically test each multiple choice option against the identified "
                     "pattern/rule\n"
                     "   - Eliminate options that violate the pattern/rule\n"
                     "   - Confirm the correct option by verifying it completes the pattern/rule\n\n"
-                    "5. FINAL VERIFICATION:\n"
+                    "3. FINAL VERIFICATION:\n"
                     "   - Double-check that the chosen answer is consistent with all observed "
                     "patterns\n"
                     "   - Ensure no alternative interpretations would lead to a different "
@@ -101,11 +87,11 @@ class ChainOfThoughtLlava:
         Returns:
             Tuple of (reasoning, final_answer)
         """
-        cot_question = f"{question}\n\n{self.cot_prompt}"
+        cot_question = f"{self.cot_prompt}\n\nQUESTION: {question}"
 
         reasoning = self.model.generate_response(image, cot_question, options)
 
-        final_answer = self._extract_answer(reasoning, question, options)
+        final_answer = self._extract_answer(reasoning, options)
 
         return reasoning, final_answer
 
@@ -179,7 +165,7 @@ class ChainOfThoughtLlava:
 
         return results
 
-    def evaluate_dataset_with_cot(
+    def evaluate_dataset_with_cot_batch(
         self,
         dataset_name: str,
         dataset_config: Optional[str] = None,
@@ -244,8 +230,10 @@ class ChainOfThoughtLlava:
             for j, ((reasoning, final_answer), direct_response) in enumerate(
                 zip(batch_cot_responses, batch_direct_responses)
             ):
-                correct_cot = final_answer.strip().upper() == batch_answers[j].strip().upper()
-                correct_direct = direct_response.strip().upper() == batch_answers[j].strip().upper()
+                correct_cot = self.match_multiple_choice_answer(final_answer, batch_answers[j])
+                correct_direct = self.match_multiple_choice_answer(
+                    direct_response, batch_answers[j]
+                )
 
                 cot_results.append(correct_cot)
                 direct_results.append(correct_direct)
@@ -261,15 +249,106 @@ class ChainOfThoughtLlava:
 
         cot_accuracy = sum(cot_results) / len(cot_results) if cot_results else 0
         direct_accuracy = sum(direct_results) / len(direct_results) if direct_results else 0
+        print(f"CoT Accuracy: {cot_accuracy}")
+        print(f"Direct Accuracy: {direct_accuracy}")
 
-        return {
-            "cot_accuracy": cot_accuracy,
-            "direct_accuracy": direct_accuracy,
-            "cot_results": cot_results,
-            "direct_results": direct_results,
-            "cot_responses": cot_responses,
-            "direct_responses": direct_responses,
-        }
+        return pd.DataFrame(
+            {
+                "question": questions,
+                "answer": answers,
+                "cot_reasoning": [cot_reasoning for cot_reasoning, _ in cot_responses],
+                "cot_answer": [cot_answer for _, cot_answer in cot_responses],
+                "direct_answer": direct_responses,
+                "cot_correct": cot_results,
+                "direct_correct": direct_results,
+            }
+        )
+
+    def evaluate_dataset_with_cot(
+        self,
+        dataset_name: str,
+        dataset_config: Optional[str] = None,
+        split: str = "test",
+        amount: int = 100,
+        rand: bool = False,
+        seed: int = 42,
+        verbose: bool = False,
+    ) -> Dict[str, Any]:
+        """
+        Evaluate the model on a HuggingFace dataset using chain of thought.
+
+        Args:
+            dataset_name: HuggingFace dataset name
+            dataset_config: Dataset configuration
+            split: Dataset split to use
+            amount: Number of examples to evaluate
+            batch_size: Batch size for evaluation
+            rand: Whether to shuffle the dataset
+            seed: Random seed for shuffling
+            verbose: Whether to print verbose output
+
+        Returns:
+            Dictionary with evaluation results
+        """
+        dataset = load_dataset(dataset_name, dataset_config, split=split)
+
+        if rand:
+            dataset = dataset.shuffle(seed=seed)
+        dataset = dataset.select(range(min(amount, len(dataset))))
+
+        images = dataset["image"]
+        questions = dataset["question"]
+        options = dataset["options"]
+        answers = dataset["answer"]
+
+        cot_results = []
+        direct_results = []
+        cot_responses = []
+        direct_responses = []
+
+        for i in range(len(dataset)):
+            image = images[i]
+            question = questions[i]
+            option = options[i]
+            answer = answers[i]
+            # Run with Chain of Thought
+            cot_reasoning, cot_answer = self.generate_response_cot(image, question, option)
+
+            # Run without Chain of Thought (direct)
+            direct_response = self.model.generate_response(image, question, option)
+
+            correct_cot = self.match_multiple_choice_answer(cot_answer, answer)
+            correct_direct = self.match_multiple_choice_answer(direct_response, answer)
+
+            cot_results.append(correct_cot)
+            direct_results.append(correct_direct)
+            cot_responses.append((cot_reasoning, cot_answer))
+            direct_responses.append(direct_response)
+
+            if verbose:
+                print(f"Question: {question}")
+                print(f"Answer: {answer}")
+                print(f"CoT Reasoning: {cot_reasoning}")
+                print(f"CoT Answer: {cot_answer}")
+                print(f"Direct Answer: {direct_response}")
+                print(f"Correct CoT: {correct_cot}, Correct Direct: {correct_direct}\n")
+
+        cot_accuracy = sum(cot_results) / len(cot_results) if cot_results else 0
+        direct_accuracy = sum(direct_results) / len(direct_results) if direct_results else 0
+        print(f"CoT Accuracy: {cot_accuracy}")
+        print(f"Direct Accuracy: {direct_accuracy}")
+
+        return pd.DataFrame(
+            {
+                "question": questions,
+                "answer": answers,
+                "cot_reasoning": [cot_reasoning for cot_reasoning, _ in cot_responses],
+                "cot_answer": [cot_answer for _, cot_answer in cot_responses],
+                "direct_answer": direct_responses,
+                "cot_correct": cot_results,
+                "direct_correct": direct_results,
+            }
+        )
 
     def compare_cot_vs_direct(
         self,
@@ -305,7 +384,56 @@ class ChainOfThoughtLlava:
 
         if answer is not None:
             result["ground_truth"] = answer
-            result["cot_correct"] = final_answer.strip().upper() == answer.strip().upper()
-            result["direct_correct"] = direct_response.strip().upper() == answer.strip().upper()
+            result["cot_correct"] = self.match_multiple_choice_answer(final_answer, answer)
+            result["direct_correct"] = self.match_multiple_choice_answer(direct_response, answer)
 
         return result
+
+    def match_multiple_choice_answer(self, model_answer: str, ground_truth: str) -> bool:
+        """
+        Match a model's answer against ground truth for multiple choice questions.
+        Only accepts exact matches of option letters (A, B, C, D) while avoiding
+        false positives from letter occurrences in other contexts.
+
+        Args:
+            model_answer: The answer string from the model
+            ground_truth: The ground truth answer (expected to be A, B, C or D)
+
+        Returns:
+            True if the model's answer matches the ground truth
+        """
+        if not model_answer or not ground_truth:
+            return False
+
+        # Clean and normalize the ground truth
+        gt_clean = ground_truth.strip().upper()
+        if gt_clean not in ["A", "B", "C", "D"]:
+            return False
+
+        # Use regex to find clear indicators of chosen answers
+        import re
+
+        # Patterns that indicate a definitive answer choice
+        patterns = [
+            rf"(?:ANSWER|OPTION|CHOOSE|SELECT|FINAL ANSWER)[^\w]*(?:IS)?[^\w]*{gt_clean}\b",
+            rf"\b{gt_clean}\)",
+            rf"\({gt_clean}\)",
+            rf"^{gt_clean}$",
+        ]
+
+        for pattern in patterns:
+            if re.search(pattern, model_answer.upper()):
+                return True
+
+        # Look for the answer at the end of the response
+        last_line = model_answer.strip().split("\n")[-1].strip()
+        if last_line.upper() == gt_clean:
+            return True
+
+        # If "FINAL ANSWER:" format is used
+        if "FINAL ANSWER:" in model_answer.upper():
+            final_part = model_answer.upper().split("FINAL ANSWER:")[-1].strip()
+            words = re.findall(r"\b[A-D]\b", final_part)
+            return bool(words and words[0] == gt_clean)
+
+        return False

@@ -144,15 +144,21 @@ class LlavaModel:
                 raise ValueError(f"Failed to process image at index {i}")
             messages.append(msg)
 
+        # We need padding and truncation for batched processing
         inputs = self.processor.apply_chat_template(
             messages,
             add_generation_prompt=True,
             tokenize=True,
+            padding=True,
+            truncation=True,
+            max_length=2048,  # Set a reasonable max_length to control memory usage
             return_dict=True,
             return_tensors="pt",
         ).to(self.device, dtype=torch.bfloat16)
 
-        input_lens = inputs["input_ids"].shape[1]
+        # For batched input with padding, we need to know where each sequence starts
+        # This is the length of input_ids for each sample in the batch
+        input_lens = inputs["attention_mask"].sum(dim=1).tolist()
 
         with torch.inference_mode():
             outputs = self.model.generate(
@@ -163,8 +169,9 @@ class LlavaModel:
             )
 
         decoded_responses = []
-        for output in outputs:
-            generation = output[input_lens:]
+        for i, output in enumerate(outputs):
+            # Extract only the generated part for each sample
+            generation = output[input_lens[i] :]
             decoded = self.processor.decode(generation, skip_special_tokens=True)
             decoded_responses.append(decoded)
 
