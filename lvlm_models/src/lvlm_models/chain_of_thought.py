@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from datasets import load_dataset
 from PIL import Image
 
-from models.llava import LlavaModel
+from lvlm_models.llava import LlavaModel
 
 
 class ChainOfThoughtLlava:
@@ -206,7 +206,6 @@ class ChainOfThoughtLlava:
         Returns:
             Dictionary with evaluation results
         """
-        # Load dataset from HuggingFace
         dataset = load_dataset(dataset_name, dataset_config, split=split)
 
         if rand:

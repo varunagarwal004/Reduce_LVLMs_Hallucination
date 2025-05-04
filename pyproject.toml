@@ -10,6 +10,7 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "lvlm_models",
     "ipdb>=0.13.13",
     "ipykernel>=6.29.5",
     "ipython>=8.29.0",
@@ -19,13 +20,13 @@ dependencies = [
     "pre-commit>=4.0.1",
     "ruff>=0.7.2",
     "python-dotenv>=1.1.0",
-    "accelerate>=1.6.0",
-    "pillow>=11.2.1",
-    "requests>=2.32.3",
-    "torch>=2.7.0",
-    "transformers>=4.51.3",
-    "datasets>=3.5.1",
 ]
+
+[tool.uv.sources.lvlm_models]
+workspace = true
+
+[tool.uv.workspace]
+members = ["lvlm_models"]
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -77,6 +78,3 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
-
-[tool.uv.workspace]
-members = ["models"]

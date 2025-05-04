@@ -2,8 +2,8 @@ import os
 
 from datasets import load_dataset
 
-from models.chain_of_thought import ChainOfThoughtLlava
-from models.llava import LlavaModel
+from lvlm_models.chain_of_thought import ChainOfThoughtLlava
+from lvlm_models.llava import LlavaModel
 
 
 def main():
@@ -38,23 +38,13 @@ def main():
     except Exception as e:
         print(f"Could not load the requested dataset: {e}")
         print("Using a fallback dataset for demonstration...")
-        dataset = load_dataset("HuggingFaceM4/VQAv2", split="validation[:10]")
+        return
 
     # Example 1: Solve a single puzzle
     example_idx = 0
     image = dataset[example_idx]["image"]
     question = dataset[example_idx]["question"]
-
-    # Options might be structured differently based on dataset
-    if "choices" in dataset[example_idx]:
-        options = dataset[example_idx]["choices"]
-    elif "options" in dataset[example_idx]:
-        options = dataset[example_idx]["options"]
-    else:
-        # Fallback - this will vary depending on dataset structure
-        options = ["Option A", "Option B", "Option C", "Option D"]
-
-    # Get ground truth if available
+    options = dataset[example_idx]["options"]
     answer = dataset[example_idx].get("answer", None)
 
     print(f"Visual Puzzle Question: {question}")
@@ -65,12 +55,12 @@ def main():
     print("\nSolving with Chain of Thought...")
 
     # Get answer using the structured format
-    puzzle_reasoning, puzzle_answer = puzzle_cot_model.generate_response_cot(
+    puzzle_answer = puzzle_cot_model.generate_response_cot_batch(
         image=image, question=question, options=options
     )
 
     # Check if the model followed the FINAL ANSWER format
-    format_followed = "FINAL ANSWER:" in puzzle_reasoning
+    format_followed = "FINAL ANSWER:" in puzzle_answer
 
     # Display results
     print("\n--- Visual Puzzle CoT Results ---")
@@ -79,7 +69,7 @@ def main():
 
     # Print the relevant portion near the answer
     print("\nReasoning excerpt (focusing on conclusion):")
-    print_reasoning_conclusion(puzzle_reasoning)
+    print_reasoning_conclusion(puzzle_answer)
 
 
 def print_reasoning_conclusion(reasoning, context_lines=5):
