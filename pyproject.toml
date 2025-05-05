@@ -1,0 +1,80 @@
+[project]
+name = "reduce_LVLMs_Hallucination"
+version = "0.1.0"
+description = "Reduce hallucinations in LVLMs"
+readme = "README.md"
+authors = [
+    { name = "Agustin Costa", email = "agustincosta@g.ucla.edu" },
+    { name = "Zhanyang Gong", email = "zhanyang.gong@ucla.edu" },
+    { name = "Varun Agarwal", email = "varunagarwal1@g.ucla.edu" },
+]
+requires-python = ">=3.12"
+dependencies = [
+    "lvlm_models",
+    "ipdb>=0.13.13",
+    "ipykernel>=6.29.5",
+    "ipython>=8.29.0",
+    "matplotlib>=3.9.2",
+    "mypy>=1.13.0",
+    "poethepoet>=0.31.1",
+    "pre-commit>=4.0.1",
+    "ruff>=0.7.2",
+    "python-dotenv>=1.1.0",
+]
+
+[tool.uv.sources.lvlm_models]
+workspace = true
+
+[tool.uv.workspace]
+members = ["lvlm_models"]
+
+[tool.mypy]
+ignore_missing_imports = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = ["torch.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
+
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+]
+line-length = 100
+indent-width = 4
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["F", "I", "E", "W", "ARG"]
+fixable = ["I"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+"research/*.py" = ["ARG"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
