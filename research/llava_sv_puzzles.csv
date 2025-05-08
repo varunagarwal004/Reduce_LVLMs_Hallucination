@@ -1,0 +1,76 @@
+question,answer,initial_reasoning,verification,final_answer,direct_answer,verified_correct,direct_correct
+"Divide the following six figures into two categories, so that each category displays its own pattern.",D,"REASONING:
+
+1. The figures are divided into two categories based on the presence of a square or a triangle.
+2. The figures with a square are grouped together, while the figures with a triangle are grouped together.
+3. The figures with a square are represented by the numbers 1, 3, and 5, while the figures with a triangle are represented by the numbers 2, 4, and 6.
+4. The figures with a square are located on the left side of the image, while the figures with a triangle are located on the right side of the image.
+5. The figures with a square are arranged in a horizontal line, while the figures with a triangle are arranged in a vertical line.
+
+FINAL ANSWER: B",VERIFICATION: CORRECT,B,B,False,False
+"Choose the most appropriate option from the four given choices to fill in the question mark, so that the figures follow a pattern.",B,"REASONING:
+
+Option A: The figures are arranged in a square, which is a common pattern in geometric shapes.
+Option B: The figures are arranged in a triangular pattern, which is not the correct pattern.
+Option C: The figures are arranged in a circular pattern, which is not the correct pattern.
+Option D: The figures are arranged in a square pattern, which is the correct pattern.
+
+FINAL ANSWER: D",VERIFICATION: CORRECT,D,B,False,True
+"In each square of the maze there is a piece of cheese. Ronnie the mouse wants to enter and leave the maze as shown in the picture. He doesn't want to visit a square more than once, but would like to eat as much cheese as possible. What is the maximum number of pieces of cheese that he can eat?",C,"REASONING:
+
+1. The maze is a square grid with a total of 16 squares.
+2. Each square contains a piece of cheese.
+3. Ronnie the mouse can only visit each square once.
+4. The goal is to eat as much cheese as possible.
+
+To maximize the number of pieces of cheese eaten, Ronnie should visit the squares in a specific order. He should start from the top left square, visiting each square in a clockwise direction, and then move to the top right square. After eating the cheese in the top right square, he should move to the bottom left square, and then to the bottom right square. This pattern will ensure that he visits each square only once and eats as many pieces of cheese as possible.
+
+FINAL ANSWER: B",VERIFICATION: CORRECT,B,10,False,False
+Michael has two building blocks as shown in <image1>. Each building block is made up of two cubes glued together. Which figure in <image2> can he not make using the blocks?,B,"REASONING:
+
+Option A: 2 cubes glued together = 4 cubes
+Option B: 2 cubes glued together = 4 cubes
+Option C: 2 cubes glued together = 4 cubes
+Option D: 2 cubes glued together = 4 cubes
+
+FINAL ANSWER: B",VERIFICATION: CORRECT,B,B,True,True
+"Bruce ciphers words adopting the board demonstrated. For example, the word DVEJ is ciphered as GT WI GH NH. What word did Bruce cipher NQ OH OT WI? ",C,"REASONING:
+
+1. The word is ciphered using the same pattern as the example provided.
+2. The letters are rearranged in a way that follows the pattern.
+3. The letters are rearranged in a way that follows the pattern.
+4. The letters are rearranged in a way that follows the pattern.
+
+FINAL ANSWER: NQ OH OT WI",VERIFICATION: CORRECT,NQ OH OT WI,GN,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",C,"REASONING:
+
+Option A: Analogy is a word that means a comparison between two things that are alike in some way. In the image, the man is fixing a camera, which is a visual device used to capture images. The word ""Origin"" is related to the beginning or source of something, which is not directly related to fixing a camera.
+
+Option B: Origin is a word that refers to the source or beginning of something. In the image, the man is fixing a camera, which is a visual device used to capture images. The word ""Analogy"" is related to comparing two things that are alike in some way.
+
+Option C: Analogy is a word that refers to comparing two things that are alike in some way. In the image, the man is fixing a camera, which is a visual device used to capture images. The word ""Origin"" is related to the beginning or source of something, which is not directly related to fixing a camera.
+
+Option D: Origin is a word that refers to the source or beginning of something. In the image, the man is fixing a camera, which is a visual device used to capture images. The word ""Analogy"" is related to comparing two things that are alike in some way.
+
+FINAL ANSWER: B",VERIFICATION: CORRECT,B,B,False,False
+This diagram in <image1> shows two see-through sheets. You place the sheets on top of each other. Which pattern from <image2> do you get?,D,"REASONING:
+
+Option A: The sheets are placed on top of each other, and the pattern from <image2> is a triangle.
+Option B: The sheets are placed on top of each other, and the pattern from <image2> is a square.
+
+Both options are incorrect because the pattern from <image2> is a triangle.
+
+FINAL ANSWER: A",VERIFICATION: CORRECT,A,B,False,False
+Which cube can be made based on the unfolded cube?,A,A,VERIFICATION: CORRECT,A,B,True,False
+Which kite has the longest string?,C,B,VERIFICATION: CORRECT,B,B,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",A,"REASONING:
+
+Option A: The word ""Origin"" is related to the concept of the beginning or source of something. In the image, there is a person tying a tie, which is a common action associated with dressing up or preparing for a formal event. The word ""Origin"" could be related to the origin of the person's attire or the event they are attending.
+
+Option B: The word ""Origin"" is related to the concept of the beginning or source of something. In the image, there is a person tying a tie, which is a common action associated with dressing up or preparing for a formal event. The word ""Origin"" could be related to the origin of the person's attire or the event they are attending.
+
+Option C: The word ""Origin"" is related to the concept of the beginning or source of something. In the image, there is a person tying a tie, which is a common action associated with dressing up or preparing for a formal event. The word ""Origin"" could be related to the origin of the person's attire or the event they are attending.
+
+Option D: The word ""Origin"" is related to the concept of the beginning or source of something. In the image, there is a person tying a tie, which is a common action associated with dressing up or preparing for a formal event. The word ""Origin"" could be related to the origin of the person's attire or the event they are attending.
+
+FINAL ANSWER: A",VERIFICATION: CORRECT,A,C,True,False

@@ -33,10 +33,6 @@ cot_model = ChainOfThoughtLlava(
     cot_strategy="visual_puzzle",
 )
 # %%
-puzzles = load_dataset("neulab/VisualPuzzles", split="train")
-# %%
-puzzles[:10]
-# %%
 results_df = cot_model.evaluate_dataset_with_cot(
     dataset_name="neulab/VisualPuzzles",
     split="train",
@@ -44,7 +40,11 @@ results_df = cot_model.evaluate_dataset_with_cot(
     verbose=True,
 )
 # %%
-results_df.to_csv("llava_cot_puzzles.csv", index=False)
+puzzles = load_dataset("neulab/VisualPuzzles", split="train")
+# %%
+puzzles[:10]
+# %%
+results_df.to_csv("llava_cot_puzzles_2.csv", index=False)
 # %%
 images = puzzles["image"][:2]
 questions = puzzles["question"][:2]

@@ -32,7 +32,11 @@ class ChainOfThoughtLlava:
 
         # Format string to encourage specific answer format
         self.answer_format_instruction = (
-            "\n\nAfter completing your reasoning, please conclude with: FINAL ANSWER: [your answer]"
+            "Generate your answer in the following format:\n"
+            "First, generate reasoning for each of the options, one line per option. "
+            "Format your reasoning as follows:\n"
+            "REASONING: [reasoning for each option, explaining why it is correct or incorrect]\n"
+            "After completing your reasoning, please conclude with: FINAL ANSWER: [your answer]"
         )
 
         # Define strategy-specific prompts if not provided
@@ -53,19 +57,15 @@ class ChainOfThoughtLlava:
                 )
             elif cot_strategy == "visual_puzzle":
                 self.cot_prompt = (
-                    "I'll solve this visual puzzle by applying a systematic reasoning approach:\n\n"
-                    "1. IDENTIFY THE 4 OPTIONS:\n"
-                    "   - Identify the 4 options available as possible answers.\n"
-                    "2. TESTING EACH OPTION:\n"
+                    "Solve this visual puzzle by applying a systematic reasoning approach:\n\n"
+                    "1. TESTING EACH OPTION:\n"
                     "   - Systematically test each multiple choice option against the identified "
                     "pattern/rule\n"
                     "   - Eliminate options that violate the pattern/rule\n"
                     "   - Confirm the correct option by verifying it completes the pattern/rule\n\n"
-                    "3. FINAL VERIFICATION:\n"
+                    "2. FINAL VERIFICATION:\n"
                     "   - Double-check that the chosen answer is consistent with all observed "
-                    "patterns\n"
-                    "   - Ensure no alternative interpretations would lead to a different "
-                    "answer\n\n" + self.answer_format_instruction
+                    "patterns\n" + self.answer_format_instruction
                 )
             else:
                 raise ValueError(f"Unknown CoT strategy: {cot_strategy}")
@@ -200,7 +200,7 @@ class ChainOfThoughtLlava:
 
         images = dataset["image"]
         questions = dataset["question"]
-        options = dataset.get("options", [None] * len(questions))
+        options = dataset["options"]
         answers = dataset["answer"]
 
         cot_results = []
@@ -326,17 +326,20 @@ class ChainOfThoughtLlava:
             direct_responses.append(direct_response)
 
             if verbose:
-                print(f"Question: {question}")
-                print(f"Answer: {answer}")
-                print(f"CoT Reasoning: {cot_reasoning}")
-                print(f"CoT Answer: {cot_answer}")
-                print(f"Direct Answer: {direct_response}")
-                print(f"Correct CoT: {correct_cot}, Correct Direct: {correct_direct}\n")
+                print(f"- Question: {question}")
+                print(f"- CoT Reasoning:\n{cot_reasoning}")
+                print(f"- Answer: {answer}")
+                print(f"- CoT Answer: {cot_answer}")
+                print(f"- Direct Answer: {direct_response}")
+                print(f"- Correct? CoT: {correct_cot}, Direct: {correct_direct}")
+                print("--------------------------------")
 
         cot_accuracy = sum(cot_results) / len(cot_results) if cot_results else 0
         direct_accuracy = sum(direct_results) / len(direct_results) if direct_results else 0
+        print("--------------------------------")
         print(f"CoT Accuracy: {cot_accuracy}")
         print(f"Direct Accuracy: {direct_accuracy}")
+        print("--------------------------------")
 
         return pd.DataFrame(
             {

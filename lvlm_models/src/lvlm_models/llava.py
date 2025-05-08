@@ -113,7 +113,7 @@ class LlavaModel:
         input_len = inputs["input_ids"].shape[-1]
 
         with torch.inference_mode():
-            outputs = self.model.generate(**inputs, max_new_tokens=100, do_sample=False)
+            outputs = self.model.generate(**inputs, max_new_tokens=1000, do_sample=False)
             # Output contains the entire sequence (system and user messages), so we need to slice
             # it to get the generation
             generation = outputs[0][input_len:]
