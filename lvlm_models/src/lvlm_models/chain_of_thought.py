@@ -12,7 +12,7 @@ class ChainOfThoughtLlava:
         self,
         base_model: LlavaModel,
         cot_prompt: str | None = None,
-        answer_extraction_prompt: str = "Therefore, the final answer is",
+        answer_extraction_prompt: str = "FINAL ANSWER",
         cot_strategy: str = "visual_puzzle",
     ):
         """
@@ -32,11 +32,14 @@ class ChainOfThoughtLlava:
 
         # Format string to encourage specific answer format
         self.answer_format_instruction = (
+            "<response_format>\n"
             "Generate your answer in the following format:\n"
             "First, generate reasoning for each of the options, one line per option. "
             "Format your reasoning as follows:\n"
             "REASONING: [reasoning for each option, explaining why it is correct or incorrect]\n"
-            "After completing your reasoning, please conclude with: FINAL ANSWER: [your answer]"
+            "After completing your reasoning, please conclude with: FINAL ANSWER: [your answer]\n"
+            "The final respons must be just the letter of the correct option: A, B, C or D\n"
+            "</response_format>\n"
         )
 
         # Define strategy-specific prompts if not provided
@@ -47,16 +50,23 @@ class ChainOfThoughtLlava:
                 )
             elif cot_strategy == "detailed":
                 self.cot_prompt = (
+                    "<strategy>\n"
                     "Let's analyze this image carefully and answer the question step by step:\n"
                     "1. First, identify the main elements visible in the image.\n"
                     "2. Consider what the question is specifically asking about.\n"
                     "3. Examine relevant details in the image that relate to the question.\n"
                     "4. Draw logical connections between the visual elements and the question.\n"
                     "5. Formulate a clear and concise answer based on this analysis."
-                    + self.answer_format_instruction
+                    "</strategy>\n" + self.answer_format_instruction
                 )
             elif cot_strategy == "visual_puzzle":
                 self.cot_prompt = (
+                    "<objective>\n"
+                    "Given the puzzle presented in the image and the question below, select the "
+                    "correct multiple choice option by responding with the option's letter: "
+                    "A, B, C or D\n"
+                    "</objective>\n"
+                    "<strategy>\n"
                     "Solve this visual puzzle by applying a systematic reasoning approach:\n\n"
                     "1. TESTING EACH OPTION:\n"
                     "   - Systematically test each multiple choice option against the identified "
@@ -65,7 +75,8 @@ class ChainOfThoughtLlava:
                     "   - Confirm the correct option by verifying it completes the pattern/rule\n\n"
                     "2. FINAL VERIFICATION:\n"
                     "   - Double-check that the chosen answer is consistent with all observed "
-                    "patterns\n" + self.answer_format_instruction
+                    "patterns\n"
+                    "</strategy>\n" + self.answer_format_instruction
                 )
             else:
                 raise ValueError(f"Unknown CoT strategy: {cot_strategy}")
@@ -87,9 +98,11 @@ class ChainOfThoughtLlava:
         Returns:
             Tuple of (reasoning, final_answer)
         """
-        cot_question = f"{self.cot_prompt}\n\nQUESTION: {question}"
+        cot_question = f"{self.cot_prompt}\n\n<QUESTION>\n{question}\n</QUESTION>"
 
-        reasoning = self.model.generate_response(image, cot_question, options)
+        reasoning = self.model.generate_response(
+            image=image, question=cot_question, options=options, use_prefix_suffix=False
+        )
 
         final_answer = self._extract_answer(reasoning, options)
 
@@ -155,7 +168,9 @@ class ChainOfThoughtLlava:
         """
         cot_questions = [f"{question}\n\n{self.cot_prompt}" for question in questions]
 
-        reasonings = self.model.generate_response_batch(images, cot_questions, options)
+        reasonings = self.model.generate_response_batch(
+            images=images, questions=cot_questions, options=options, use_prefix_suffix=False
+        )
 
         results = []
         for i, reasoning in enumerate(reasonings):
@@ -175,7 +190,7 @@ class ChainOfThoughtLlava:
         rand: bool = False,
         seed: int = 42,
         verbose: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> pd.DataFrame:
         """
         Evaluate the model on a HuggingFace dataset using chain of thought.
 
@@ -218,14 +233,25 @@ class ChainOfThoughtLlava:
             batch_answers = [answers[j] for j in range(i, batch_end)]
 
             # Run with Chain of Thought
-            batch_cot_responses = self.generate_response_cot_batch(
-                batch_images, batch_questions, batch_options
-            )
+            try:
+                batch_cot_responses = self.generate_response_cot_batch(
+                    batch_images, batch_questions, batch_options
+                )
+            except Exception as e:
+                print(f"Failed to generate CoT response for batch {i}: {questions}\n\n{e}\n")
+                continue
 
             # Run without Chain of Thought (direct)
-            batch_direct_responses = self.model.generate_response_batch(
-                batch_images, batch_questions, batch_options
-            )
+            try:
+                batch_direct_responses = self.model.generate_response_batch(
+                    images=batch_images,
+                    questions=batch_questions,
+                    options=batch_options,
+                    use_prefix_suffix=True,
+                )
+            except Exception as e:
+                print(f"Failed to generate CoT response for batch {i}: {questions}\n\n{e}\n")
+                continue
 
             for j, ((reasoning, final_answer), direct_response) in enumerate(
                 zip(batch_cot_responses, batch_direct_responses)
@@ -273,7 +299,7 @@ class ChainOfThoughtLlava:
         rand: bool = False,
         seed: int = 42,
         verbose: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> pd.DataFrame:
         """
         Evaluate the model on a HuggingFace dataset using chain of thought.
 
@@ -312,10 +338,19 @@ class ChainOfThoughtLlava:
             option = options[i]
             answer = answers[i]
             # Run with Chain of Thought
-            cot_reasoning, cot_answer = self.generate_response_cot(image, question, option)
-
+            try:
+                cot_reasoning, cot_answer = self.generate_response_cot(image, question, option)
+            except Exception as e:
+                print(f"Failed to generate CoT response for question {i}: {question}\n\n{e}\n")
+                continue
             # Run without Chain of Thought (direct)
-            direct_response = self.model.generate_response(image, question, option)
+            try:
+                direct_response = self.model.generate_response(
+                    image=image, question=question, options=option, use_prefix_suffix=True
+                )
+            except Exception as e:
+                print(f"Failed to generate direct response for question {i}: {question}\n\n{e}\n")
+                continue
 
             correct_cot = self.match_multiple_choice_answer(cot_answer, answer)
             correct_direct = self.match_multiple_choice_answer(direct_response, answer)

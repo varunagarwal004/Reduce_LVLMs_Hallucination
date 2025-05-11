@@ -33,9 +33,12 @@ class SelfVerificationLlava:
         self.reasoning_strategy = reasoning_strategy
 
         self.answer_format_instruction = (
+            "<response_format>\n"
             "Generate your reasoning in the following format:\n"
             "REASONING: [detailed reasoning for why each option is correct or incorrect]\n"
-            "After completing your reasoning, please conclude with: FINAL ANSWER: [your answer]"
+            "After completing your reasoning, please conclude with: FINAL ANSWER: [your answer]\n"
+            "The final respons must be just the letter of the correct option: A, B, C or D\n"
+            "</response_format>\n"
         )
 
         # Define strategy-specific reasoning prompts if not provided
@@ -47,16 +50,23 @@ class SelfVerificationLlava:
                 )
             elif reasoning_strategy == "detailed":
                 self.reasoning_prompt = (
+                    "<strategy>\n"
                     "Examine this image carefully and answer the question step by step:\n"
                     "1. Identify the main elements visible in the image.\n"
                     "2. Consider what the question is specifically asking about.\n"
                     "3. Examine relevant details that relate to the question.\n"
                     "4. Draw logical connections between the visual elements and the question.\n"
                     "5. Formulate a reasoned answer based on this analysis.\n"
-                    + self.answer_format_instruction
+                    "</strategy>\n" + self.answer_format_instruction
                 )
             elif reasoning_strategy == "visual_reasoning":
                 self.reasoning_prompt = (
+                    "<objective>\n"
+                    "Given the puzzle presented in the image and the question below, select the "
+                    "correct multiple choice option by responding with the option's letter: "
+                    "A, B, C or D\n"
+                    "</objective>\n"
+                    "<strategy>\n"
                     "Solve this visual problem by carefully reasoning through each option:\n\n"
                     "1. ANALYZE THE IMAGE:\n"
                     "   - Identify key visual elements and patterns\n"
@@ -64,7 +74,7 @@ class SelfVerificationLlava:
                     "2. ASSESS EACH OPTION:\n"
                     "   - Consider each option systematically\n"
                     "   - Evaluate how well each option aligns with the image and question\n\n"
-                    + self.answer_format_instruction
+                    "</strategy>\n" + self.answer_format_instruction
                 )
             else:
                 raise ValueError(f"Unknown reasoning strategy: {reasoning_strategy}")
@@ -74,12 +84,14 @@ class SelfVerificationLlava:
         # Define verification prompt if not provided
         if verification_prompt is None:
             self.verification_prompt = (
+                "<answer_verification>"
                 "You will receive an image, a question, and a previous answer with reasoning. "
                 "Your task is to verify if the previous answer is correct. "
                 "If it's correct, respond with 'VERIFICATION: CORRECT'.\n"
                 "If it's incorrect, respond with 'VERIFICATION: INCORRECT' followed by "
                 "the correct answer formatted as 'CORRECT ANSWER: [correct answer]' "
-                "and an explanation of why the previous answer was wrong."
+                "and an explanation of why the previous answer was wrong.\n"
+                "</answer_verification>\n"
             )
         else:
             self.verification_prompt = verification_prompt
@@ -100,17 +112,20 @@ class SelfVerificationLlava:
         """
         # Step 1: Generate initial reasoning
         reasoning_question = f"{self.reasoning_prompt}\n\nQUESTION: {question}"
-        initial_reasoning = self.model.generate_response(image, reasoning_question, options)
+        initial_reasoning = self.model.generate_response(
+            image=image, question=reasoning_question, options=options, use_prefix_suffix=False
+        )
         initial_answer = self._extract_answer(initial_reasoning, options)
 
         # Step 2: Verify the reasoning and answer
         verification_question = (
             f"{self.verification_prompt}\n\n"
-            f"QUESTION: {question}\n\n"
-            f"PREVIOUS RESPONSE:\n{initial_reasoning}\n\n"
-            f"Is this answer correct? Provide your verification."
+            f"<QUESTION>\n{question}\n</QUESTION>\n"
+            f"<PREVIOUS RESPONSE>\n{initial_reasoning}\n</PREVIOUS RESPONSE>\n"
         )
-        verification = self.model.generate_response(image, verification_question, options)
+        verification = self.model.generate_response(
+            image=image, question=verification_question, options=options, use_prefix_suffix=False
+        )
 
         # Extract final answer based on verification
         if "VERIFICATION: INCORRECT" in verification:
@@ -224,7 +239,9 @@ class SelfVerificationLlava:
         for i, (image, question) in enumerate(zip(images, questions)):
             opts = options[i] if options is not None and i < len(options) else None
             initial_reasoning, verification, final_answer = (
-                self.generate_response_with_verification(image, question, opts)
+                self.generate_response_with_verification(
+                    image=image, question=question, options=opts
+                )
             )
             results.append((initial_reasoning, verification, final_answer))
 
@@ -295,15 +312,29 @@ class SelfVerificationLlava:
                 answer = batch_answers[j]
 
                 # Run with verification
-                initial_reasoning, verification, final_answer = (
-                    self.generate_response_with_verification(image, question, opts)
-                )
+                try:
+                    initial_reasoning, verification, final_answer = (
+                        self.generate_response_with_verification(
+                            image=image, question=question, options=opts
+                        )
+                    )
+                except Exception as e:
+                    print(f"Failed to generate SV response for question {i}: {question}\n\n{e}\n")
+                    continue
 
                 # Extract initial answer from reasoning
                 initial_answer = self._extract_answer(initial_reasoning, opts)
 
                 # Run without verification (direct)
-                direct_response = self.model.generate_response(image, question, opts)
+                try:
+                    direct_response = self.model.generate_response(
+                        image=image, question=question, options=opts, use_prefix_suffix=True
+                    )
+                except Exception as e:
+                    print(
+                        f"Failed to generate direct response for question {i}: {question}\n\n{e}\n"
+                    )
+                    continue
 
                 # Store raw responses
                 initial_reasonings.append(initial_reasoning)

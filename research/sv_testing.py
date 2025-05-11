@@ -19,7 +19,9 @@ model = LlavaModel(
     model_name="llava-hf/llava-1.5-7b-hf",
     hf_token=os.getenv("HF_TOKEN"),
     system_prompt=(
-        "You are a helpful visual assistant that can solve visual puzzles and reasoning tasks."
+        "<role>\n"
+        "You are a helpful visual assistant that can solve visual puzzles and reasoning tasks.\n"
+        "</role>"
     ),
     prompt_prefix="Analyze this visual puzzle in the image and answer the following question:",
     prompt_suffix=(
