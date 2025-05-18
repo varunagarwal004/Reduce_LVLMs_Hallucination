@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 from datasets import load_dataset
 from PIL import Image
+from tqdm import tqdm
 
 from lvlm_models.llava import LlavaModel
 
@@ -224,7 +225,14 @@ class ChainOfThoughtLlava:
         cot_responses = []
         direct_responses = []
 
-        for i in range(0, len(dataset), batch_size):
+        # Create progress bar
+        pbar = tqdm(
+            range(0, len(dataset), batch_size),
+            desc="Evaluating with chain-of-thought (batch)",
+            total=(len(dataset) + batch_size - 1) // batch_size,
+        )
+
+        for i in pbar:
             batch_end = min(i + batch_size, len(dataset))
             batch_images = images[i:batch_end]
             batch_questions = questions[i:batch_end]
@@ -274,6 +282,14 @@ class ChainOfThoughtLlava:
                     print(f"Direct Answer: {direct_response}")
                     print(f"Correct CoT: {correct_cot}, Correct Direct: {correct_direct}\n")
 
+                # Update progress bar postfix with current accuracies
+                pbar.set_postfix(
+                    {
+                        "CoT Acc": f"{sum(cot_results) / len(cot_results):.3f}",
+                        "Direct Acc": f"{sum(direct_results) / len(direct_results):.3f}",
+                    }
+                )
+
         cot_accuracy = sum(cot_results) / len(cot_results) if cot_results else 0
         direct_accuracy = sum(direct_results) / len(direct_results) if direct_results else 0
         print(f"CoT Accuracy: {cot_accuracy}")
@@ -309,7 +325,6 @@ class ChainOfThoughtLlava:
             dataset_config: Dataset configuration
             split: Dataset split to use
             amount: Number of examples to evaluate
-            batch_size: Batch size for evaluation
             rand: Whether to shuffle the dataset
             seed: Random seed for shuffling
             verbose: Whether to print verbose output
@@ -333,7 +348,14 @@ class ChainOfThoughtLlava:
         cot_responses = []
         direct_responses = []
 
-        for i in range(len(dataset)):
+        # Create progress bar
+        pbar = tqdm(
+            range(len(dataset)),
+            desc="Evaluating with chain-of-thought",
+            total=len(dataset),
+        )
+
+        for i in pbar:
             image = images[i]
             question = questions[i]
             option = options[i]
@@ -369,6 +391,14 @@ class ChainOfThoughtLlava:
                 print(f"- Direct Answer: {direct_response}")
                 print(f"- Correct? CoT: {correct_cot}, Direct: {correct_direct}")
                 print("--------------------------------")
+
+            # Update progress bar postfix with current accuracies
+            pbar.set_postfix(
+                {
+                    "CoT Acc": f"{sum(cot_results) / len(cot_results):.3f}",
+                    "Direct Acc": f"{sum(direct_results) / len(direct_results):.3f}",
+                }
+            )
 
         cot_accuracy = sum(cot_results) / len(cot_results) if cot_results else 0
         direct_accuracy = sum(direct_results) / len(direct_results) if direct_results else 0

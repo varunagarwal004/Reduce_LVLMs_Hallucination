@@ -3,6 +3,7 @@ from typing import List, Optional, Tuple
 import pandas as pd
 from datasets import load_dataset
 from PIL import Image
+from tqdm import tqdm
 
 from lvlm_models.llava import LlavaModel
 
@@ -302,7 +303,14 @@ class SelfVerificationLlava:
         verified_correct_results = []
         direct_correct_results = []
 
-        for i in range(0, len(dataset), batch_size):
+        # Create progress bar
+        pbar = tqdm(
+            range(0, len(dataset), batch_size),
+            desc="Evaluating with self-verification",
+            total=(len(dataset) + batch_size - 1) // batch_size,
+        )
+
+        for i in pbar:
             batch_end = min(i + batch_size, len(dataset))
             batch_images = images[i:batch_end]
             batch_questions = questions[i:batch_end]
@@ -372,6 +380,15 @@ class SelfVerificationLlava:
                         f" Correct Direct: {direct_correct}\n"
                     )
                     print("--------------------------------")
+
+                # Update progress bar postfix with current accuracies
+                pbar.set_postfix(
+                    {
+                        "Initial Acc": f"{sum(initial_correct_results) / len(initial_correct_results):.3f}",
+                        "Verified Acc": f"{sum(verified_correct_results) / len(verified_correct_results):.3f}",
+                        "Direct Acc": f"{sum(direct_correct_results) / len(direct_correct_results):.3f}",
+                    }
+                )
 
         # Calculate and print the accuracy metrics
         initial_accuracy = (
