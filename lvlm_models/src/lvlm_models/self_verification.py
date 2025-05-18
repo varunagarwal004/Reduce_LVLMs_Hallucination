@@ -37,7 +37,8 @@ class SelfVerificationLlava:
             "Generate your reasoning in the following format:\n"
             "REASONING: [detailed reasoning for why each option is correct or incorrect]\n"
             "After completing your reasoning, please conclude with: FINAL ANSWER: [your answer]\n"
-            "The final respons must be just the letter of the correct option: A, B, C or D\n"
+            "The final response must be just the letter of the correct option, no extra text or "
+            "punctuation.\n"
             "</response_format>\n"
         )
 
@@ -63,8 +64,8 @@ class SelfVerificationLlava:
                 self.reasoning_prompt = (
                     "<objective>\n"
                     "Given the puzzle presented in the image and the question below, select the "
-                    "correct multiple choice option by responding with the option's letter: "
-                    "A, B, C or D\n"
+                    "correct multiple choice option by responding with only one of the option's "
+                    "letters: A, B, C or D\n"
                     "</objective>\n"
                     "<strategy>\n"
                     "Solve this visual problem by carefully reasoning through each option:\n\n"
@@ -91,6 +92,8 @@ class SelfVerificationLlava:
                 "If it's incorrect, respond with 'VERIFICATION: INCORRECT' followed by "
                 "the correct answer formatted as 'CORRECT ANSWER: [correct answer]' "
                 "and an explanation of why the previous answer was wrong.\n"
+                "The final response must be just the letter of the correct option, no extra text "
+                "or punctuation.\n"
                 "</answer_verification>\n"
             )
         else:
@@ -291,6 +294,8 @@ class SelfVerificationLlava:
         verification_responses = []
         final_answers = []
         direct_responses = []
+        responded_questions = []
+        responded_answers = []
 
         # Track correctness for metrics calculation
         initial_correct_results = []
@@ -342,6 +347,8 @@ class SelfVerificationLlava:
                 verification_responses.append(verification)
                 final_answers.append(final_answer)
                 direct_responses.append(direct_response)
+                responded_questions.append(question)
+                responded_answers.append(answer)
 
                 # Calculate correctness (for statistics only)
                 initial_correct = self.match_multiple_choice_answer(initial_answer, answer)
@@ -391,8 +398,8 @@ class SelfVerificationLlava:
         # Return only the raw responses and reasonings in the DataFrame
         return pd.DataFrame(
             {
-                "question": questions,
-                "answer": answers,
+                "question": responded_questions,
+                "answer": responded_answers,
                 "initial_reasoning": initial_reasonings,
                 "initial_answer": initial_answers,
                 "verification_response": verification_responses,

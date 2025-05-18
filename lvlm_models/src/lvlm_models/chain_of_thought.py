@@ -38,7 +38,8 @@ class ChainOfThoughtLlava:
             "Format your reasoning as follows:\n"
             "REASONING: [reasoning for each option, explaining why it is correct or incorrect]\n"
             "After completing your reasoning, please conclude with: FINAL ANSWER: [your answer]\n"
-            "The final respons must be just the letter of the correct option: A, B, C or D\n"
+            "The final response must be just the letter of the correct option, no extra text "
+            "or punctuation.\n"
             "</response_format>\n"
         )
 
@@ -63,8 +64,8 @@ class ChainOfThoughtLlava:
                 self.cot_prompt = (
                     "<objective>\n"
                     "Given the puzzle presented in the image and the question below, select the "
-                    "correct multiple choice option by responding with the option's letter: "
-                    "A, B, C or D\n"
+                    "correct multiple choice option by responding with only one of the option's "
+                    "letters: A, B, C or D\n"
                     "</objective>\n"
                     "<strategy>\n"
                     "Solve this visual puzzle by applying a systematic reasoning approach:\n\n"
