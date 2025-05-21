@@ -50,7 +50,11 @@ class LlavaModel:
             return None
 
     def format_messages(
-        self, image: Image.Image, prompt: str, options: list[str] | None = None
+        self,
+        image: Image.Image,
+        prompt: str,
+        options: list[str] | None = None,
+        use_prefix_suffix: bool | None = None,
     ) -> list[dict]:
         """
         Format the messages for the VLLM.
@@ -75,7 +79,9 @@ class LlavaModel:
                     {"type": "image", "image": base64_image},
                     {
                         "type": "text",
-                        "text": (f"{self.prompt_prefix}\n{prompt}\n{self.prompt_suffix}\n"),
+                        "text": (f"{self.prompt_prefix}\n{prompt}\n{self.prompt_suffix}\n")
+                        if use_prefix_suffix
+                        else prompt,
                     },
                 ],
             },
@@ -85,12 +91,18 @@ class LlavaModel:
                 f"{letter}: {option}" for letter, option in zip(["A", "B", "C", "D"], options)
             ]
             messages[-1]["content"][-1]["text"] += (
-                f"These are the options to choose from: {' | '.join(options_str)}"
+                "<options>\n"
+                f"These are the options to choose from: {' | '.join(options_str)}\n"
+                "</options>"
             )
         return messages
 
     def generate_response(
-        self, image: Image.Image, question: str, options: list[str] | None = None
+        self,
+        image: Image.Image,
+        question: str,
+        options: list[str] | None = None,
+        use_prefix_suffix: bool | None = None,
     ) -> str | None:
         """
         Generate text from the image and prompt.
@@ -101,7 +113,7 @@ class LlavaModel:
         Returns:
             The generated text.
         """
-        messages = self.format_messages(image, question, options)
+        messages = self.format_messages(image, question, options, use_prefix_suffix)
         inputs = self.processor.apply_chat_template(
             messages,
             add_generation_prompt=True,
@@ -113,7 +125,7 @@ class LlavaModel:
         input_len = inputs["input_ids"].shape[-1]
 
         with torch.inference_mode():
-            outputs = self.model.generate(**inputs, max_new_tokens=100, do_sample=False)
+            outputs = self.model.generate(**inputs, max_new_tokens=1000, do_sample=False)
             # Output contains the entire sequence (system and user messages), so we need to slice
             # it to get the generation
             generation = outputs[0][input_len:]
@@ -126,6 +138,7 @@ class LlavaModel:
         images: list[Image.Image],
         questions: list[str],
         options: list[list[str]] | None = None,
+        use_prefix_suffix: bool | None = None,
     ) -> list[str]:
         """
         Generate responses for a batch of images and questions efficiently.
@@ -139,7 +152,7 @@ class LlavaModel:
         messages = []
         for i, (image, question) in enumerate(zip(images, questions)):
             opts = options[i] if options is not None else None
-            msg = self.format_messages(image, question, opts)
+            msg = self.format_messages(image, question, opts, use_prefix_suffix)
             if msg is None:  # Handle potential image processing failures
                 raise ValueError(f"Failed to process image at index {i}")
             messages.append(msg)

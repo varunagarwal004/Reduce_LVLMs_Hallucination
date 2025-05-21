@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 from datasets import load_dataset
 from PIL import Image
+from tqdm import tqdm
 
 from lvlm_models.llava import LlavaModel
 
@@ -12,7 +13,7 @@ class ChainOfThoughtLlava:
         self,
         base_model: LlavaModel,
         cot_prompt: str | None = None,
-        answer_extraction_prompt: str = "Therefore, the final answer is",
+        answer_extraction_prompt: str = "FINAL ANSWER",
         cot_strategy: str = "visual_puzzle",
     ):
         """
@@ -32,7 +33,15 @@ class ChainOfThoughtLlava:
 
         # Format string to encourage specific answer format
         self.answer_format_instruction = (
-            "\n\nAfter completing your reasoning, please conclude with: FINAL ANSWER: [your answer]"
+            "<response_format>\n"
+            "Generate your answer in the following format:\n"
+            "First, generate reasoning for each of the options, one line per option. "
+            "Format your reasoning as follows:\n"
+            "REASONING: [reasoning for each option, explaining why it is correct or incorrect]\n"
+            "After completing your reasoning, please conclude with: FINAL ANSWER: [your answer]\n"
+            "The final response must be just the letter of the correct option, no extra text "
+            "or punctuation.\n"
+            "</response_format>\n"
         )
 
         # Define strategy-specific prompts if not provided
@@ -43,29 +52,33 @@ class ChainOfThoughtLlava:
                 )
             elif cot_strategy == "detailed":
                 self.cot_prompt = (
+                    "<strategy>\n"
                     "Let's analyze this image carefully and answer the question step by step:\n"
                     "1. First, identify the main elements visible in the image.\n"
                     "2. Consider what the question is specifically asking about.\n"
                     "3. Examine relevant details in the image that relate to the question.\n"
                     "4. Draw logical connections between the visual elements and the question.\n"
                     "5. Formulate a clear and concise answer based on this analysis."
-                    + self.answer_format_instruction
+                    "</strategy>\n" + self.answer_format_instruction
                 )
             elif cot_strategy == "visual_puzzle":
                 self.cot_prompt = (
-                    "I'll solve this visual puzzle by applying a systematic reasoning approach:\n\n"
-                    "1. IDENTIFY THE 4 OPTIONS:\n"
-                    "   - Identify the 4 options available as possible answers.\n"
-                    "2. TESTING EACH OPTION:\n"
+                    "<objective>\n"
+                    "Given the puzzle presented in the image and the question below, select the "
+                    "correct multiple choice option by responding with only one of the option's "
+                    "letters: A, B, C or D\n"
+                    "</objective>\n"
+                    "<strategy>\n"
+                    "Solve this visual puzzle by applying a systematic reasoning approach:\n\n"
+                    "1. TESTING EACH OPTION:\n"
                     "   - Systematically test each multiple choice option against the identified "
                     "pattern/rule\n"
                     "   - Eliminate options that violate the pattern/rule\n"
                     "   - Confirm the correct option by verifying it completes the pattern/rule\n\n"
-                    "3. FINAL VERIFICATION:\n"
+                    "2. FINAL VERIFICATION:\n"
                     "   - Double-check that the chosen answer is consistent with all observed "
                     "patterns\n"
-                    "   - Ensure no alternative interpretations would lead to a different "
-                    "answer\n\n" + self.answer_format_instruction
+                    "</strategy>\n" + self.answer_format_instruction
                 )
             else:
                 raise ValueError(f"Unknown CoT strategy: {cot_strategy}")
@@ -87,9 +100,11 @@ class ChainOfThoughtLlava:
         Returns:
             Tuple of (reasoning, final_answer)
         """
-        cot_question = f"{self.cot_prompt}\n\nQUESTION: {question}"
+        cot_question = f"{self.cot_prompt}\n\n<QUESTION>\n{question}\n</QUESTION>"
 
-        reasoning = self.model.generate_response(image, cot_question, options)
+        reasoning = self.model.generate_response(
+            image=image, question=cot_question, options=options, use_prefix_suffix=False
+        )
 
         final_answer = self._extract_answer(reasoning, options)
 
@@ -155,7 +170,9 @@ class ChainOfThoughtLlava:
         """
         cot_questions = [f"{question}\n\n{self.cot_prompt}" for question in questions]
 
-        reasonings = self.model.generate_response_batch(images, cot_questions, options)
+        reasonings = self.model.generate_response_batch(
+            images=images, questions=cot_questions, options=options, use_prefix_suffix=False
+        )
 
         results = []
         for i, reasoning in enumerate(reasonings):
@@ -175,105 +192,7 @@ class ChainOfThoughtLlava:
         rand: bool = False,
         seed: int = 42,
         verbose: bool = False,
-    ) -> Dict[str, Any]:
-        """
-        Evaluate the model on a HuggingFace dataset using chain of thought.
-
-        Args:
-            dataset_name: HuggingFace dataset name
-            dataset_config: Dataset configuration
-            split: Dataset split to use
-            amount: Number of examples to evaluate
-            batch_size: Batch size for evaluation
-            rand: Whether to shuffle the dataset
-            seed: Random seed for shuffling
-            verbose: Whether to print verbose output
-
-        Returns:
-            Dictionary with evaluation results
-        """
-        dataset = load_dataset(dataset_name, dataset_config, split=split)
-
-        if rand:
-            dataset = dataset.shuffle(seed=seed)
-        dataset = dataset.select(range(min(amount, len(dataset))))
-
-        images = dataset["image"]
-        questions = dataset["question"]
-        options = dataset.get("options", [None] * len(questions))
-        answers = dataset["answer"]
-
-        cot_results = []
-        direct_results = []
-        cot_responses = []
-        direct_responses = []
-
-        for i in range(0, len(dataset), batch_size):
-            batch_end = min(i + batch_size, len(dataset))
-            batch_images = images[i:batch_end]
-            batch_questions = questions[i:batch_end]
-            batch_options = (
-                [options[j] for j in range(i, batch_end)] if options[0] is not None else None
-            )
-            batch_answers = [answers[j] for j in range(i, batch_end)]
-
-            # Run with Chain of Thought
-            batch_cot_responses = self.generate_response_cot_batch(
-                batch_images, batch_questions, batch_options
-            )
-
-            # Run without Chain of Thought (direct)
-            batch_direct_responses = self.model.generate_response_batch(
-                batch_images, batch_questions, batch_options
-            )
-
-            for j, ((reasoning, final_answer), direct_response) in enumerate(
-                zip(batch_cot_responses, batch_direct_responses)
-            ):
-                correct_cot = self.match_multiple_choice_answer(final_answer, batch_answers[j])
-                correct_direct = self.match_multiple_choice_answer(
-                    direct_response, batch_answers[j]
-                )
-
-                cot_results.append(correct_cot)
-                direct_results.append(correct_direct)
-                cot_responses.append((reasoning, final_answer))
-                direct_responses.append(direct_response)
-
-                if verbose:
-                    print(f"Question: {batch_questions[j]}")
-                    print(f"CoT Reasoning: {reasoning}")
-                    print(f"CoT Answer: {final_answer}")
-                    print(f"Direct Answer: {direct_response}")
-                    print(f"Correct CoT: {correct_cot}, Correct Direct: {correct_direct}\n")
-
-        cot_accuracy = sum(cot_results) / len(cot_results) if cot_results else 0
-        direct_accuracy = sum(direct_results) / len(direct_results) if direct_results else 0
-        print(f"CoT Accuracy: {cot_accuracy}")
-        print(f"Direct Accuracy: {direct_accuracy}")
-
-        return pd.DataFrame(
-            {
-                "question": questions,
-                "answer": answers,
-                "cot_reasoning": [cot_reasoning for cot_reasoning, _ in cot_responses],
-                "cot_answer": [cot_answer for _, cot_answer in cot_responses],
-                "direct_answer": direct_responses,
-                "cot_correct": cot_results,
-                "direct_correct": direct_results,
-            }
-        )
-
-    def evaluate_dataset_with_cot(
-        self,
-        dataset_name: str,
-        dataset_config: Optional[str] = None,
-        split: str = "test",
-        amount: int = 100,
-        rand: bool = False,
-        seed: int = 42,
-        verbose: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> pd.DataFrame:
         """
         Evaluate the model on a HuggingFace dataset using chain of thought.
 
@@ -306,16 +225,155 @@ class ChainOfThoughtLlava:
         cot_responses = []
         direct_responses = []
 
-        for i in range(len(dataset)):
+        # Create progress bar
+        pbar = tqdm(
+            range(0, len(dataset), batch_size),
+            desc="Evaluating with chain-of-thought (batch)",
+            total=(len(dataset) + batch_size - 1) // batch_size,
+        )
+
+        for i in pbar:
+            batch_end = min(i + batch_size, len(dataset))
+            batch_images = images[i:batch_end]
+            batch_questions = questions[i:batch_end]
+            batch_options = (
+                [options[j] for j in range(i, batch_end)] if options[0] is not None else None
+            )
+            batch_answers = [answers[j] for j in range(i, batch_end)]
+
+            # Run with Chain of Thought
+            try:
+                batch_cot_responses = self.generate_response_cot_batch(
+                    batch_images, batch_questions, batch_options
+                )
+            except Exception as e:
+                print(f"Failed to generate CoT response for batch {i}: {questions}\n\n{e}\n")
+                continue
+
+            # Run without Chain of Thought (direct)
+            try:
+                batch_direct_responses = self.model.generate_response_batch(
+                    images=batch_images,
+                    questions=batch_questions,
+                    options=batch_options,
+                    use_prefix_suffix=True,
+                )
+            except Exception as e:
+                print(f"Failed to generate CoT response for batch {i}: {questions}\n\n{e}\n")
+                continue
+
+            for j, ((reasoning, final_answer), direct_response) in enumerate(
+                zip(batch_cot_responses, batch_direct_responses)
+            ):
+                correct_cot = self.match_multiple_choice_answer(final_answer, batch_answers[j])
+                correct_direct = self.match_multiple_choice_answer(
+                    direct_response, batch_answers[j]
+                )
+
+                cot_results.append(correct_cot)
+                direct_results.append(correct_direct)
+                cot_responses.append((reasoning, final_answer))
+                direct_responses.append(direct_response)
+
+                if verbose:
+                    print(f"Question: {batch_questions[j]}")
+                    print(f"CoT Reasoning: {reasoning}")
+                    print(f"CoT Answer: {final_answer}")
+                    print(f"Direct Answer: {direct_response}")
+                    print(f"Correct CoT: {correct_cot}, Correct Direct: {correct_direct}\n")
+
+                # Update progress bar postfix with current accuracies
+                pbar.set_postfix(
+                    {
+                        "CoT Acc": f"{sum(cot_results) / len(cot_results):.3f}",
+                        "Direct Acc": f"{sum(direct_results) / len(direct_results):.3f}",
+                    }
+                )
+
+        cot_accuracy = sum(cot_results) / len(cot_results) if cot_results else 0
+        direct_accuracy = sum(direct_results) / len(direct_results) if direct_results else 0
+        print(f"CoT Accuracy: {cot_accuracy}")
+        print(f"Direct Accuracy: {direct_accuracy}")
+
+        return pd.DataFrame(
+            {
+                "question": questions,
+                "answer": answers,
+                "cot_reasoning": [cot_reasoning for cot_reasoning, _ in cot_responses],
+                "cot_answer": [cot_answer for _, cot_answer in cot_responses],
+                "direct_answer": direct_responses,
+                "cot_correct": cot_results,
+                "direct_correct": direct_results,
+            }
+        )
+
+    def evaluate_dataset_with_cot(
+        self,
+        dataset_name: str,
+        dataset_config: Optional[str] = None,
+        split: str = "test",
+        amount: int = 100,
+        rand: bool = False,
+        seed: int = 42,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """
+        Evaluate the model on a HuggingFace dataset using chain of thought.
+
+        Args:
+            dataset_name: HuggingFace dataset name
+            dataset_config: Dataset configuration
+            split: Dataset split to use
+            amount: Number of examples to evaluate
+            rand: Whether to shuffle the dataset
+            seed: Random seed for shuffling
+            verbose: Whether to print verbose output
+
+        Returns:
+            Dictionary with evaluation results
+        """
+        dataset = load_dataset(dataset_name, dataset_config, split=split)
+
+        if rand:
+            dataset = dataset.shuffle(seed=seed)
+        dataset = dataset.select(range(min(amount, len(dataset))))
+
+        images = dataset["image"]
+        questions = dataset["question"]
+        options = dataset["options"]
+        answers = dataset["answer"]
+
+        cot_results = []
+        direct_results = []
+        cot_responses = []
+        direct_responses = []
+
+        # Create progress bar
+        pbar = tqdm(
+            range(len(dataset)),
+            desc="Evaluating with chain-of-thought",
+            total=len(dataset),
+        )
+
+        for i in pbar:
             image = images[i]
             question = questions[i]
             option = options[i]
             answer = answers[i]
             # Run with Chain of Thought
-            cot_reasoning, cot_answer = self.generate_response_cot(image, question, option)
-
+            try:
+                cot_reasoning, cot_answer = self.generate_response_cot(image, question, option)
+            except Exception as e:
+                print(f"Failed to generate CoT response for question {i}: {question}\n\n{e}\n")
+                continue
             # Run without Chain of Thought (direct)
-            direct_response = self.model.generate_response(image, question, option)
+            try:
+                direct_response = self.model.generate_response(
+                    image=image, question=question, options=option, use_prefix_suffix=True
+                )
+            except Exception as e:
+                print(f"Failed to generate direct response for question {i}: {question}\n\n{e}\n")
+                continue
 
             correct_cot = self.match_multiple_choice_answer(cot_answer, answer)
             correct_direct = self.match_multiple_choice_answer(direct_response, answer)
@@ -326,17 +384,28 @@ class ChainOfThoughtLlava:
             direct_responses.append(direct_response)
 
             if verbose:
-                print(f"Question: {question}")
-                print(f"Answer: {answer}")
-                print(f"CoT Reasoning: {cot_reasoning}")
-                print(f"CoT Answer: {cot_answer}")
-                print(f"Direct Answer: {direct_response}")
-                print(f"Correct CoT: {correct_cot}, Correct Direct: {correct_direct}\n")
+                print(f"- Question: {question}")
+                print(f"- CoT Reasoning:\n{cot_reasoning}")
+                print(f"- Answer: {answer}")
+                print(f"- CoT Answer: {cot_answer}")
+                print(f"- Direct Answer: {direct_response}")
+                print(f"- Correct? CoT: {correct_cot}, Direct: {correct_direct}")
+                print("--------------------------------")
+
+            # Update progress bar postfix with current accuracies
+            pbar.set_postfix(
+                {
+                    "CoT Acc": f"{sum(cot_results) / len(cot_results):.3f}",
+                    "Direct Acc": f"{sum(direct_results) / len(direct_results):.3f}",
+                }
+            )
 
         cot_accuracy = sum(cot_results) / len(cot_results) if cot_results else 0
         direct_accuracy = sum(direct_results) / len(direct_results) if direct_results else 0
+        print("--------------------------------")
         print(f"CoT Accuracy: {cot_accuracy}")
         print(f"Direct Accuracy: {direct_accuracy}")
+        print("--------------------------------")
 
         return pd.DataFrame(
             {

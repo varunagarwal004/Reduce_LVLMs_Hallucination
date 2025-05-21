@@ -1,0 +1,809 @@
+question,answer,cot_reasoning,cot_answer,direct_answer,cot_correct,direct_correct
+"Divide the following six figures into two categories, so that each category displays its own pattern.",D,"REASONING:
+
+1. The first figure is a square.
+2. The second figure is a triangle.
+3. The third figure is a square.
+4. The fourth figure is a triangle.
+5. The fifth figure is a square.
+6. The sixth figure is a triangle.
+
+FINAL ANSWER: B",B,B,False,False
+"Choose the most appropriate option from the four given choices to fill in the question mark, so that the figures follow a pattern.",B,"REASONING:
+
+Option A: The triangle is missing a side, which is the same as the missing side in the other triangles.
+Option B: The triangles have different sides, which is not consistent with the pattern.
+Option C: The triangles have the same sides, which is consistent with the pattern.
+Option D: The triangles have different sides, which is not consistent with the pattern.
+
+FINAL ANSWER: C",C,B,False,True
+"In each square of the maze there is a piece of cheese. Ronnie the mouse wants to enter and leave the maze as shown in the picture. He doesn't want to visit a square more than once, but would like to eat as much cheese as possible. What is the maximum number of pieces of cheese that he can eat?",C,"REASONING:
+A: Each square has 4 pieces of cheese, so Ronnie can eat 4 pieces in each square. Since there are 4 squares, he can eat a total of 4 \* 4 = 16 pieces of cheese.
+B: Each square has 5 pieces of cheese, so Ronnie can eat 5 pieces in each square. Since there are 4 squares, he can eat a total of 5 \* 4 = 20 pieces of cheese.
+C: Each square has 6 pieces of cheese, so Ronnie can eat 6 pieces in each square. Since there are 4 squares, he can eat a total of 6 \* 4 = 24 pieces of cheese.
+D: Each square has 7 pieces of cheese, so Ronnie can eat 7 pieces in each square. Since there are 4 squares, he can eat a total of 7 \* 4 = 28 pieces of cheese.
+
+FINAL ANSWER: A",A,A,False,False
+Michael has two building blocks as shown in <image1>. Each building block is made up of two cubes glued together. Which figure in <image2> can he not make using the blocks?,B,"REASONING:
+
+A: 2 cubes glued together = 4 cubes
+B: 2 cubes glued together = 4 cubes
+C: 2 cubes glued together = 4 cubes
+D: 2 cubes glued together = 4 cubes
+
+FINAL ANSWER: B",B,B,True,True
+"Bruce ciphers words adopting the board demonstrated. For example, the word DVEJ is ciphered as GT WI GH NH. What word did Bruce cipher NQ OH OT WI? ",C,"REASONING:
+A: XOCR - This option does not follow the pattern of the given cipher.
+B: DJWS - This option does not follow the pattern of the given cipher.
+C: KQFV - This option does not follow the pattern of the given cipher.
+D: KFQV - This option follows the pattern of the given cipher.
+
+FINAL ANSWER: D",D,D,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",C,"REASONING:
+A. Origin is the source or starting point of something.
+B. Analogy is a comparison between two things that are similar in some way.
+C. Origin' is not a word, it is a misspelling of Origin.
+D. Analogy is a word that means a comparison between two things that are similar in some way.
+
+FINAL ANSWER: D",D,B,False,False
+This diagram in <image1> shows two see-through sheets. You place the sheets on top of each other. Which pattern from <image2> do you get?,D,"REASONING:
+
+Option A: The pattern on the top sheet is a triangle pointing upwards.
+Option B: The pattern on the top sheet is a triangle pointing downwards.
+Option C: The pattern on the top sheet is a square.
+
+FINAL ANSWER: A",A,B,False,False
+Which cube can be made based on the unfolded cube?,A,"REASONING:
+A: The cube is made of 3 squares of different colors.
+B: The cube is made of 3 squares of the same color.
+C: The cube is made of 3 squares of different shapes.
+
+FINAL ANSWER: B",B,B,False,False
+Which kite has the longest string?,C,"REASONING:
+A: The kite has a string that is longer than the other kite.
+B: The kite has a string that is shorter than the other kite.
+C: The kite has a string that is the same length as the other kite.
+
+FINAL ANSWER: A",A,B,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",A,"REASONING:
+A. Origin is the source or starting point of something.
+B. Analogy is a comparison between two things that are similar in some way.
+C. Origin' is not a word, it is a noun.
+D. Analogy' is not a word, it is a verb.
+
+FINAL ANSWER: B",B,C,False,False
+Rachel made a shape using some black blocks and 112 white blocks. How many of these white blocks cannot be seen in the drawing?  ,D,"REASONING:
+A: 29 - The number of white blocks in the drawing is 112, and the number of black blocks is 29. This is not a valid option.
+B: 68 - The number of white blocks in the drawing is 112, and the number of black blocks is 68. This is not a valid option.
+C: 82 - The number of white blocks in the drawing is 112, and the number of black blocks is 82. This is not a valid option.
+D: 75 - The number of white blocks in the drawing is 112, and the number of black blocks is 75. This is the correct answer.
+
+FINAL ANSWER: D",D,A,True,False
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",B,"REASONING:
+A: The angle of the chairs is 90 degrees.
+B: The angle of the chairs is 180 degrees.
+C: The angle of the chairs is 270 degrees.
+D: The angle of the chairs is 360 degrees.
+
+FINAL ANSWER: A",A,C,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",A,"REASONING:
+A - Analogy is a comparison between two things that are similar in some way.
+B - Origin is the starting point or source of something.
+C - Candidates are people or things that are being considered for a particular position or role.
+
+Based on the relationship between Origin and Analogy, the best option that completes the analogy is C.",,B,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",C,"REASONING:
+A. Analogy: Origin + Analogy = Origin'
+B. Analogy: Origin + Analogy = Analogy
+C. Analogy: Origin + Analogy = Origin'
+D. Analogy: Origin + Analogy = Analogy
+
+FINAL ANSWER: C",C,B,True,False
+"Divide the following six figures into two categories, so that each category displays its own pattern.",D,"REASONING:
+
+1. Triangle: The triangle has three sides, and the pattern is to have three sides.
+2. Circle: The circle has a single line, and the pattern is to have a single line.
+3. Star: The star has five points, and the pattern is to have five points.
+4. Cross: The cross has four lines, and the pattern is to have four lines.
+5. Diamond: The diamond has four sides, and the pattern is to have four sides.
+6. Square: The square has four sides, and the pattern is to have four sides.
+
+FINAL ANSWER: B",B,B,False,False
+"Divide the following six figures into two categories, so that each category displays its own pattern.",D,"REASONING:
+
+1. The first figure is a square with a triangle inside it.
+2. The second figure is a triangle with a square inside it.
+3. The third figure is a circle with a square inside it.
+4. The fourth figure is a square with a circle inside it.
+5. The fifth figure is a triangle with a circle inside it.
+6. The sixth figure is a circle with a triangle inside it.
+
+FINAL ANSWER: B",B,B,False,False
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",D,"REASONING:
+A: The angle of the chairs is 90 degrees.
+B: The angle of the chairs is 180 degrees.
+C: The angle of the chairs is 270 degrees.
+D: The angle of the chairs is 360 degrees.
+
+FINAL ANSWER: A",A,C,False,False
+A big cube is made up of 9 identical building blocks. Each building block looks like this: <image1>. Which big cube in <image2> is possible?,A,"REASONING:
+
+Option A: The big cube in <image2> is made up of 9 identical building blocks, each of which looks like <image1>.
+Option B: The big cube in <image2> is made up of 9 identical building blocks, each of which looks like <image2>.
+Option C: The big cube in <image2> is made up of 9 identical building blocks, each of which looks like <image3>.
+
+FINAL ANSWER: A",A,C,True,False
+Kathryn's place is 4 kilometers from Rebecca's place. The lane from Kathryn's place to Joshua's place is 9 kilometers long. The distance from the junction to Kathryn's place is as shown. How long is the lane from Rebecca's place to Joshua's place? ,A,"REASONING:
+A: 7 - The distance from the junction to Kathryn's place is 7 kilometers, which is not consistent with the given pattern.
+B: 4 - The distance from the junction to Kathryn's place is 4 kilometers, which is consistent with the given pattern.
+C: 10 - The distance from the junction to Kathryn's place is 10 kilometers, which is not consistent with the given pattern.
+D: 15 - The distance from the junction to Kathryn's place is 15 kilometers, which is not consistent with the given pattern.
+
+FINAL ANSWER: B",B,B,False,False
+"In the Kangaroo constellation, all stars have a number greater than 3 and their sum is 20. Which option shows the Kangaroo constellation?",B,"REASONING:
+
+1. 5, 12, 17, 22, 28: This option has the correct number of stars (5) and their sum is 20.
+2. 6, 13, 18, 23, 29: This option has the correct number of stars (5) but their sum is not 20.
+3. 7, 14, 20, 25, 30: This option has the correct number of stars (5) but their sum is not 20.
+
+FINAL ANSWER: 5, 12, 17, 22, 28","5, 12, 17, 22, 28",C,False,False
+"Lisa needs exactly 3 pieces to complete her jigsaw in <image1>.
+Which of the 4 pieces in <image2> is left over?",A,"REASONING:
+A: The jigsaw in <image1> has 3 pieces.
+B: The jigsaw in <image2> has 4 pieces.
+C: The jigsaw in <image1> is missing 1 piece.
+D: The jigsaw in <image2> is missing 1 piece.
+
+FINAL ANSWER: B",B,B,False,False
+Which figure is a rotation of the object?,D,"REASONING:
+A: The triangle is rotated 180 degrees clockwise.
+B: The triangle is rotated 180 degrees counterclockwise.
+C: The triangle is rotated 90 degrees clockwise.
+D: The triangle is rotated 90 degrees counterclockwise.
+
+FINAL ANSWER: A",A,B,False,False
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",D,"REASONING:
+A: The angle of the chairs is 90 degrees.
+B: The angle of the chairs is 180 degrees.
+C: The angle of the chairs is 270 degrees.
+D: The angle of the chairs is 360 degrees.
+
+FINAL ANSWER: A",A,C,False,False
+"Ella wants to write a number into each cell of a 3 times 3 grid so that the sum of the numbers in any two cells that share an edge is the same. She has already written two numbers, as shown in the diagram.
+When Ella has completed the grid, what will be the sum of all the numbers in the grid?",B,"REASONING:
+A: 18 + 18 = 36
+B: 22 + 22 = 44
+C: 26 + 26 = 52
+D: 30 + 30 = 60
+
+FINAL ANSWER: A",A,C,False,False
+"Divide the following six figures into two categories, so that each category displays its own pattern.",D,"REASONING:
+
+1. The first figure is a square with a diagonal line.
+2. The second figure is a triangle with a horizontal line.
+3. The third figure is a rectangle with a vertical line.
+4. The fourth figure is a circle with a diagonal line.
+5. The fifth figure is a pentagon with a horizontal line.
+6. The sixth figure is a hexagon with a vertical line.
+
+FINAL ANSWER: B",B,B,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",A,"REASONING:
+A. Analogy: A relationship between two things that are similar in some way.
+B. Origin: The source or cause of something.
+C. Candidates:
+1. C: A source or cause of something.
+2. B: A relationship between two things that are similar in some way.
+
+FINAL ANSWER: C",C,B,False,False
+"Jeff represents words applying the board demonstrated. For example, the word DCXEH is represented as AM KF GF GI AF. What word did Jeff represent KS KF LC LF GM? ",B,"REASONING:
+A: The letter ""T"" is not present in the word ""KS KF LC LF GM.""
+B: The letter ""C"" is not present in the word ""KS KF LC LF GM.""
+C: The letter ""P"" is not present in the word ""KS KF LC LF GM.""
+D: The letter ""F"" is not present in the word ""KS KF LC LF GM.""
+
+FINAL ANSWER: A",A,D,False,False
+"Choose the most appropriate option from the four given choices to fill in the question mark, so that the figures follow a pattern.",B,"REASONING:
+A: The pattern is formed by connecting the centers of the figures.
+B: The pattern is formed by connecting the edges of the figures.
+C: The pattern is formed by connecting the corners of the figures.
+D: The pattern is formed by connecting the centers of the figures.
+
+FINAL ANSWER: D",D,B,False,True
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",C,"REASONING:
+A: The angle of the chairs is 90 degrees.
+B: The angle of the chairs is 180 degrees.
+C: The angle of the chairs is 270 degrees.
+D: The angle of the chairs is 360 degrees.
+
+FINAL ANSWER: A",A,C,False,True
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",A,"REASONING:
+A: 0 degrees
+B: 90 degrees
+C: 180 degrees
+D: 270 degrees
+
+FINAL ANSWER: B",B,C,False,False
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",A,"REASONING:
+A: The angle of the chairs is 90 degrees.
+B: The angle of the chairs is 180 degrees.
+C: The angle of the chairs is 270 degrees.
+D: The angle of the chairs is 360 degrees.
+
+FINAL ANSWER: A",A,C,True,False
+Which of the following options conforms to the pattern given in the figure?,D,"REASONING:
+A: The pattern is a square with a black square in the middle.
+B: The pattern is a square with a white square in the middle.
+C: The pattern is a square with a black square in the middle.
+
+FINAL ANSWER: C",C,B,False,False
+How many blocks are in this 3D tower?,C,"REASONING:
+A: The number of blocks in the tower is 7. The blocks are arranged in a triangular pattern, and each row has 7 blocks.
+B: The number of blocks in the tower is 8. The blocks are arranged in a square pattern, and each side has 8 blocks.
+C: The number of blocks in the tower is 9. The blocks are arranged in a cubic pattern, and each corner has 9 blocks.
+D: The number of blocks in the tower is 10. The blocks are arranged in a dodecahedron pattern, and each vertex has 10 blocks.
+
+FINAL ANSWER: A",A,A,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",D,"REASONING:
+A. Analogy: Origin + Analogy = Origin'
+B. Analogy: Origin + Analogy = Origin'
+C. Analogy: Origin + Analogy = Origin
+D. Analogy: Origin + Analogy = Origin
+
+FINAL ANSWER: C",C,B,False,False
+"Choose the most appropriate option from the four given choices to fill in the question mark, so that the figures follow a pattern.",A,"REASONING:
+A: The figures are connected by straight lines.
+B: The figures are connected by curved lines.
+C: The figures are connected by both straight and curved lines.
+D: The figures are not connected.
+
+FINAL ANSWER: A",A,B,True,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",A,"REASONING:
+A. Analogy: A word or phrase that is similar to another word or phrase in meaning or sound.
+B. Origin: The source or cause of something.
+C. Analogy: A word or phrase that is similar to another word or phrase in meaning or sound.
+D. Origin: The source or cause of something.
+
+FINAL ANSWER: A",A,B,True,False
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",A,"REASONING:
+A: The angle of the chairs is 90 degrees.
+B: The angle of the chairs is 180 degrees.
+C: The angle of the chairs is 270 degrees.
+D: The angle of the chairs is 360 degrees.
+
+FINAL ANSWER: A",A,C,True,False
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",D,"REASONING:
+A: The angle of the chairs is 90 degrees.
+B: The angle of the chairs is 180 degrees.
+C: The angle of the chairs is 270 degrees.
+D: The angle of the chairs is 360 degrees.
+
+FINAL ANSWER: A",A,C,False,False
+"Every night the wizard Tilim makes the weather forecast for the king. When Tilim gets it right he gets 3 gold coins, but when he makes a mistake, he pays a fine of 2 gold coins. After making the prediction for 5 days, Tilim did the math and discovered that he neither won nor lost coins. How many times did he get the weather forecast right in those 5 days?",B,"REASONING:
+A: Tilim got the weather forecast right 1 time in 5 days.
+B: Tilim got the weather forecast right 2 times in 5 days.
+C: Tilim got the weather forecast right 3 times in 5 days.
+D: Tilim got the weather forecast right 4 times in 5 days.
+
+FINAL ANSWER: A",A,C,False,False
+Chase wants to buy 4 kilograms of oval beads and 5 kilograms of star-shaped beads. How much will he spend? (Unit: $),C,"REASONING:
+A: 14 - The price of oval beads is $2/kg.
+B: 16 - The price of star-shaped beads is $3/kg.
+C: 18 - The price of oval beads is $2/kg, and the price of star-shaped beads is $3/kg.
+D: 20 - The price of oval beads is $2/kg, and the price of star-shaped beads is $3/kg.
+
+FINAL ANSWER: C",C,A,True,False
+"Choose the most appropriate option from the four given choices to fill in the question mark, so that the figures follow a pattern.",A,"REASONING:
+A: The figure is a square, which is not part of the pattern.
+B: The figure is a triangle, which is part of the pattern.
+C: The figure is a circle, which is not part of the pattern.
+D: The figure is a square, which is not part of the pattern.
+
+FINAL ANSWER: B",B,B,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",D,"REASONING:
+A. Analogy: Origin + Analogy = Origin'
+B. Analogy: Origin + Analogy = Origin'
+C. Analogy: Origin + Analogy = Origin
+D. Analogy: Origin + Analogy = Origin
+
+FINAL ANSWER: C",C,B,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",D,"REASONING:
+A. Origin is the beginning or source of something, while Analogy is a comparison or similarity between two things.
+B. Origin is a noun, while Analogy is a verb.
+C. Origin is a word that starts with the letter ""O"", while Analogy starts with the letter ""A"".
+
+FINAL ANSWER: B",B,B,False,False
+"Choose the most appropriate option from the four given choices to fill in the question mark, so that the figures follow a pattern.",B,"REASONING:
+A: The triangle is located at the top left corner.
+B: The triangle is located at the top right corner.
+C: The triangle is located at the bottom left corner.
+D: The triangle is located at the bottom right corner.
+
+FINAL ANSWER: B",B,B,True,True
+"Choose the most appropriate option from the four given choices to fill in the question mark, so that the figures follow a pattern.",C,"REASONING:
+
+A: The triangle is pointing upwards, which is not the correct direction for the pattern.
+B: The triangle is pointing downwards, which is the correct direction for the pattern.
+C: The circle is not a part of the pattern, as it is not a figure that follows the pattern.
+D: The circle is a part of the pattern, as it is a figure that follows the pattern.
+
+FINAL ANSWER: B",B,B,False,False
+How many right hands are depicted in the image? ,B,"REASONING:
+A: The hand is pointing upwards, which is not a correct representation of a hand pointing downwards.
+B: The hand is pointing downwards, which is not a correct representation of a hand pointing upwards.
+C: The hand is pointing downwards, which is the correct representation of a hand pointing downwards.
+D: The hand is pointing upwards, which is the correct representation of a hand pointing upwards.
+
+FINAL ANSWER: C",C,C,False,False
+How many left hands appear in the image? ,C,"REASONING:
+A: The hand is pointing upwards, which is not a common hand gesture.
+B: The hand is pointing downwards, which is a common hand gesture.
+C: The hand is pointing to the left, which is a common hand gesture.
+D: The hand is pointing to the right, which is a common hand gesture.
+
+FINAL ANSWER: B",B,B,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",D,"REASONING:
+A. Analogy: Origin + Analogy = Origin'
+B. Analogy: Origin + Analogy = Analog
+C. Analogy: Origin + Analogy = Origin'
+D. Analogy: Origin + Analogy = Analog
+
+FINAL ANSWER: C",C,B,False,False
+Which of the following options follows the pattern in the given figure?,C,"REASONING:
+A: The square is on the left side of the figure.
+B: The square is on the right side of the figure.
+C: The square is in the middle of the figure.
+
+FINAL ANSWER: B",B,B,False,False
+"There are white, grey and black squares. Three children use these to make this pattern in <image1>.
+First Anni replaces all black squares with white squares.
+Then Bob replaces all grey squares with black squares.
+Finally Chris replaces all white squares with grey squares.
+Which picture in <image2> have the three children now created?",A,"REASONING:
+A: The pattern created by Anni is a checkerboard pattern, with alternating black and white squares.
+B: The pattern created by Bob is a black and white checkerboard pattern, with alternating black and white squares.
+D: The pattern created by Chris is a checkerboard pattern, with alternating black and white squares.
+
+FINAL ANSWER: B",B,B,False,False
+In the picture we see three dice on top of each other. The sum of the points on opposite sides of the dice is 7 as usual. The sum of the points of areas that face each other is always 5. How many points are on the area marked X?,C,"REASONING:
+A: The sum of the points on opposite sides of the dice is 7, but the sum of the points of areas that face each other is 5, which is incorrect.
+B: The sum of the points on opposite sides of the dice is 7, and the sum of the points of areas that face each other is 5, which is correct.
+C: The sum of the points on opposite sides of the dice is 7, and the sum of the points of areas that face each other is 5, which is incorrect.
+D: The sum of the points on opposite sides of the dice is 7, and the sum of the points of areas that face each other is 5, which is incorrect.
+
+FINAL ANSWER: B",B,B,False,False
+"There are three flowers on the back of the left cactus. In total, the cactus on the right has six more flowers than the cactus on the left. How many flowers are on the back of the right cactus?",C,"REASONING:
+A: The left cactus has three flowers, and the right cactus has six more, so the right cactus has a total of 9 flowers.
+B: The left cactus has three flowers, and the right cactus has six more, so the right cactus has a total of 9 flowers.
+C: The left cactus has three flowers, and the right cactus has six more, so the right cactus has a total of 9 flowers.
+D: The left cactus has three flowers, and the right cactus has six more, so the right cactus has a total of 9 flowers.
+
+FINAL ANSWER: A",A,B,False,False
+Andrea made the pattern in <image1> out of several identical tiles. None of the tiles overlap each other. Which of the following tiles in <image2> could she definitely not have used?,D,"REASONING:
+A: The square in the middle of the image is the only one that is not surrounded by other squares.
+B: The square in the top left corner is the only one that is not surrounded by other squares.
+C: The square in the top right corner is the only one that is not surrounded by other squares.
+D: The square in the bottom left corner is the only one that is not surrounded by other squares.
+
+FINAL ANSWER: A",A,D,False,True
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",B,"REASONING:
+A. Origin is the beginning of a word or concept
+B. Analogy is a comparison between two things
+C. Candidate B is the correct answer because it describes the relationship between Origin and Analogy
+
+FINAL ANSWER: B",B,B,True,True
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",C,"REASONING:
+A - Analogy is a comparison between two things that are similar in some way.
+B - Origin is the starting point or source of something.
+C - Candidates are people who are running for a position.
+
+Based on the relationship between Origin and Analogy, the best option that completes the analogy is C.
+
+FINAL ANSWER: C",C,B,True,False
+Sylvia made a setup using some green bricks and 95 gray bricks. How many of these gray bricks are not visible in the cartoon?  ,C,"REASONING:
+A: 37 - The number of gray bricks in the cartoon is 95, and the number of green bricks is 10. Therefore, the number of gray bricks not visible in the cartoon is 37.
+B: 20 - The number of gray bricks in the cartoon is 95, and the number of green bricks is 10. Therefore, the number of gray bricks not visible in the cartoon is 20.
+C: 64 - The number of gray bricks in the cartoon is 95, and the number of green bricks is 10. Therefore, the number of gray bricks not visible in the cartoon is 64.
+D: 19 - The number of gray bricks in the cartoon is 95, and the number of green bricks is 10. Therefore, the number of gray bricks not visible in the cartoon is 19.
+
+FINAL ANSWER: A",A,A,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",A,"REASONING:
+A. Analogy: Origin + Analogy = Origin'
+B. Analogy: Origin + Analogy = Origin'
+C. Analogy: Origin + Analogy = Origin'
+D. Analogy: Origin + Analogy = Origin'
+
+FINAL ANSWER: A",A,B,True,False
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",B,"REASONING:
+A: The angle of the chairs is 90 degrees.
+B: The angle of the chairs is 180 degrees.
+C: The angle of the chairs is 270 degrees.
+D: The angle of the chairs is 360 degrees.
+
+FINAL ANSWER: A",A,C,False,False
+"There are two holes in the cover of a book. The book lies on the table opened up (see <image1>).
+After closing up the book which vehicles in <image2> can Olaf see?",D,"REASONING:
+
+Option A: Cars
+
+* The book is opened up, and the cover has two holes.
+* Cars are visible in the image, and they have two wheels.
+
+Option B: Trucks
+
+* The book is opened up, and the cover has two holes.
+* Trucks are visible in the image, and they have two wheels.
+
+Option C: Motorcycles
+
+* The book is opened up, and the cover has two holes.
+* Motorcycles are visible in the image, and they have two wheels.
+
+Option D: Bicycles
+
+* The book is opened up, and the cover has two holes.
+* Bicycles are visible in the image, and they have two wheels.
+
+FINAL ANSWER: C",C,B,False,False
+How many left hands appear in the image? ,A,"REASONING:
+A: The hand is pointing upwards, which is not a common direction for a left hand.
+B: The hand is pointing downwards, which is a common direction for a left hand.
+C: The hand is pointing to the left, which is a common direction for a left hand.
+D: The hand is pointing to the right, which is not a common direction for a left hand.
+
+FINAL ANSWER: B",B,C,False,False
+"Choose the most appropriate option from the four given choices to fill in the question mark, so that the figures follow a pattern.",C,"REASONING:
+
+1. A: The figures are arranged in a square, and the question mark is placed in the middle.
+2. B: The figures are arranged in a circle, and the question mark is placed in the center.
+3. C: The figures are arranged in a triangle, and the question mark is placed at the top.
+4. D: The figures are arranged in a straight line, and the question mark is placed at the end.
+
+FINAL ANSWER: B",B,B,False,False
+"The sum of the number in each line, column and diagonal in the 3 times 3 square is always constant. Only two numbers are visible. Which number is missing in field a?",D,"REASONING:
+A: 16 + 6 + 3 = 25
+B: 51 + 1 + 3 = 55
+C: 54 + 4 + 3 = 65
+D: 55 + 5 + 3 = 65
+
+FINAL ANSWER: D",D,A,True,False
+How many ways are there for the feline to reach the bird if the feline can only move horizontally or vertically towards the bird in the grid? ,B,"REASONING:
+A: The feline can only move horizontally or vertically, so it can reach the bird in 13 ways.
+B: The feline can move in any direction, so it can reach the bird in 15 ways.
+C: The feline can move in any direction, but it can only move one space at a time, so it can reach the bird in 19 ways.
+D: The feline can move in any direction, but it can only move one space at a time, so it can reach the bird in 14 ways.
+
+FINAL ANSWER: B",B,A,True,False
+The boulevard from William's school to Anthony's school is 7 km far. The boulevard from William's school to Felicia's school is 14 km long. The distance from the junction to William's school is as shown. How long is the boulevard from Anthony's school to Felicia's school? ,B,"REASONING:
+A: 7 km is the distance from the junction to William's school, but it is not possible to determine the distance from the junction to Anthony's school.
+B: 14 km is the distance from the junction to Felicia's school, but it is not possible to determine the distance from the junction to Anthony's school.
+C: 7 km is the distance from the junction to William's school, and 14 km is the distance from the junction to Felicia's school. Therefore, the distance from the junction to Anthony's school is 14 km.
+D: 23 km is the distance from the junction to Anthony's school, but it is not possible to determine the distance from the junction to Felicia's school.
+
+FINAL ANSWER: C",C,C,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",B,"REASONING:
+A. Origin is the starting point or source of something.
+B. Analogy is a comparison between two things that are similar in some way.
+C. Origin' is not a word, so it doesn't fit the analogy.
+D. Analog' is not a word, so it doesn't fit the analogy.
+
+FINAL ANSWER: B",B,B,True,True
+Which of the following options has the same pattern as the given figure?,C,"First, let's analyze the given figure:
+
+The figure consists of a square grid with black and white squares. The black squares are arranged in a pattern, forming a cross-like shape. The white squares are placed around the black squares, creating a checkered pattern.
+
+Now, let's test each option:
+
+A. B. C. D.
+
+A. The black squares are arranged in a cross-like shape, and the white squares are placed around the black squares. This option matches the given figure.
+
+B. The black squares are arranged in a cross-like shape, but the white squares are not placed around the black squares. This option does not match the given figure.
+
+C. The black squares are placed around the white squares, and the white squares are arranged in a cross-like shape. This option does not match the given figure.
+
+D. The black squares are placed around the white squares, and the white squares are arranged in a checkered pattern. This option does not match the given figure.
+
+FINAL ANSWER: A",A,B,False,False
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",B,"REASONING:
+A: The angle of the chairs is 90 degrees.
+B: The angle of the chairs is 180 degrees.
+C: The angle of the chairs is 270 degrees.
+D: The angle of the chairs is 360 degrees.
+
+FINAL ANSWER: A",A,C,False,False
+"Divide the following six figures into two categories, so that each category displays its own pattern.",A,"REASONING:
+
+1. Triangle: The triangle has three sides, and each side is equal in length.
+2. Square: The square has four sides, and each side is equal in length.
+3. Parallelogram: The parallelogram has two pairs of parallel sides, and each pair is equal in length.
+4. Rectangle: The rectangle has four sides, and each side is equal in length.
+5. Trapezoid: The trapezoid has two pairs of sides, and each pair is not equal in length.
+6. Kite: The kite has two pairs of sides, and each pair is not equal in length.
+
+FINAL ANSWER: B",B,B,False,False
+In how many ways can the monkey reach the feline given that the monkey can only move horizontally or vertically towards the feline in the grid? ,B,"REASONING:
+A: The monkey can only move horizontally or vertically, so it can reach the feline in 4 ways: left, right, up, or down.
+B: The monkey can move in any direction, so it can reach the feline in 6 ways: left, right, up, down, diagonal left, or diagonal right.
+C: The monkey can move in any direction, so it can reach the feline in 7 ways: left, right, up, down, diagonal left, diagonal right, or straight up.
+D: The monkey can move in any direction, so it can reach the feline in 9 ways: left, right, up, down, diagonal left, diagonal right, straight up, straight down, or a combination of these.
+
+FINAL ANSWER: B",B,B,True,True
+Theodor has built this tower made up of discs. He looks at the tower from above. How many discs does he see?,B,"REASONING:
+A: Theodor sees only two discs, one on top of the other. This is not a valid configuration for a tower made up of discs.
+B: Theodor sees three discs, one on top of the other, with one additional disc on the side. This is not a valid configuration for a tower made up of discs.
+C: Theodor sees four discs, one on top of the other, with one additional disc on the side. This is a valid configuration for a tower made up of discs.
+D: Theodor sees five discs, one on top of the other, with one additional disc on the side. This is not a valid configuration for a tower made up of discs.
+
+FINAL ANSWER: C",C,C,False,False
+"Analyze the pattern of changes in the figure below, and choose the appropriate fifth row:",B,"REASONING:
+A: The pattern is a square with hearts in each corner.
+B: The pattern is a square with hearts in each corner and a heart in the middle.
+C: The pattern is a square with hearts in each corner and a heart in the middle, but the hearts are not arranged in a specific order.
+D: The pattern is a square with hearts in each corner and a heart in the middle, but the hearts are not arranged in a specific order.
+
+FINAL ANSWER: B",B,B,True,True
+"From the above food web diagram, what would happen to dragonfly if all mayfly die? Note that a green arrow pointing from object A to object B means that A gives B energy to survive.",C,"REASONING:
+A: remains the same - The dragonfly is not directly dependent on the mayfly for its survival.
+B: increase - The mayfly is a primary food source for the dragonfly, so its death would lead to a decrease in the dragonfly population.
+C: decrease - The dragonfly would be negatively affected by the death of the mayfly, as it would have less food to consume.
+D: NA - The dragonfly is not directly involved in the relationship between the mayfly and the shrimp.
+
+FINAL ANSWER: C",C,A,True,False
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",C,"REASONING:
+A: 180 degrees
+B: 90 degrees
+C: 120 degrees
+D: 240 degrees
+
+FINAL ANSWER: A",A,C,False,True
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",A,"REASONING:
+A. Analogy is a relationship between two things that are similar in some way.
+B. Origin is the source or cause of something.
+C. Candidates are people who are running for a position.
+
+Based on the relationship between Origin and Analogy, the best option that completes the analogy is C.
+
+FINAL ANSWER: C",C,B,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",A,"REASONING:
+A. Analogy: Origin is the beginning, and Analogy is the process of reasoning from similarities or differences between two things.
+B. Candidates:
+i. Candidate A: Origin + Analogy = Originin
+ii. Candidate B: Origin + Analogy = Originin
+iii. Candidate C: Origin + Analogy = Originin
+iv. Candidate D: Origin + Analogy = Originin
+
+FINAL ANSWER: B",B,C,False,False
+"Choose the most appropriate option from the four given choices to fill in the question mark, so that the figures follow a pattern.",B,"REASONING:
+A: The figure is a triangle with a straight line at the bottom.
+B: The figure is a square with a straight line at the bottom.
+C: The figure is a rectangle with a straight line at the bottom.
+D: The figure is a diamond with a straight line at the bottom.
+
+FINAL ANSWER: A",A,B,False,True
+A man folds a sheet of paper 2 times through the dashed lines and then cuts it through the red line as shown. How many pieces of paper does he end up with? ,B,"REASONING:
+A: The man folds the paper twice, so he has 2 pieces.
+B: The man cuts the paper through the red line, so he has 2 pieces.
+C: The man folds the paper twice and then cuts it through the red line, so he has 2 pieces.
+D: The man folds the paper twice and then cuts it through the red line, so he has 4 pieces.
+
+FINAL ANSWER: B",B,B,True,True
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",D,"REASONING:
+A. Analogy is the relationship between Origin and Analogy.
+B. Origin is the starting point or source of something.
+C. Analogy is a comparison between two things that are similar in some way.
+
+FINAL ANSWER: B",B,B,False,False
+What number should replace the question mark in the image?,C,"REASONING:
+A: The number 15 is not in the correct position to complete the pattern.
+B: The number 16 is not in the correct position to complete the pattern.
+C: The number 17 is not in the correct position to complete the pattern.
+D: The number 18 is not in the correct position to complete the pattern.
+
+FINAL ANSWER: D",D,A,False,False
+"Based on the relationship between Origin and Analogy, select the option from the candidates that best completes this analogy.",A,"REASONING:
+A - Analogy is a comparison between two things that are alike in some way.
+B - Origin is the source or cause of something.
+C - Candidates are people or things that are being considered for a particular position or role.
+
+Based on the relationship between Origin and Analogy, the best option that completes the analogy is C.
+
+FINAL ANSWER: C",C,C,False,False
+"Each of seven students has chosen three courses from ten options, and must sit an exam for each of his or her three choices. Two students sitting the same exam must do so at the same time, but no student can sit more than one exam in the same day. The table of choices is given in <image 1>. Find the smallest number of days required to schedule the exams. ",A,"REASONING:
+A: 4 students, 3 exams each, 2 exams at the same time, 7 exams in total. 2 days required.
+B: 5 students, 3 exams each, 2 exams at the same time, 10 exams in total. 2 days required.
+C: 6 students, 3 exams each, 2 exams at the same time, 12 exams in total. 2 days required.
+D: 7 students, 3 exams each, 2 exams at the same time, 14 exams in total. 2 days required.
+
+FINAL ANSWER: A",A,B,True,False
+Who bucket contains the least water?,D,"REASONING:
+A: Bucket B contains the least water.
+B: Bucket B contains the least water.
+C: Bucket B contains the least water.
+D: Bucket B contains the least water.
+
+FINAL ANSWER: B",B,B,False,False
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",A,"REASONING:
+A: The angle of the chairs is 90 degrees.
+B: The angle of the chairs is 180 degrees.
+C: The angle of the chairs is 270 degrees.
+D: The angle of the chairs is 360 degrees.
+
+FINAL ANSWER: A",A,C,True,False
+"On a table, five polygon cards are stacked as shown. Each card is numbered according to the color shown at the bottom. The cards are removed one by one from the top of the stack. In what possible order are the cards removed? ",A,"REASONING:
+A: 2-5-3-1-4
+* 2 is the only number that is not in the correct order.
+* 5 is the only number that is in the correct order.
+* 3 is the only number that is in the correct order.
+* 1 is the only number that is in the correct order.
+* 4 is the only number that is in the correct order.
+* The pattern is 2-5-3-1-4.
+
+B: 5-4-1-2-3
+* 5 is the only number that is in the correct order.
+* 4 is the only number that is in the correct order.
+* 1 is the only number that is in the correct order.
+* 2 is the only number that is in the correct order.
+* 3 is the only number that is in the correct order.
+* The pattern is 5-4-1-2-3.
+
+C: 3-2-1-5-4
+* 3 is the only number that is in the correct order.
+* 2 is the only number that is in the correct order.
+* 1 is the only number that is in the correct order.
+* 5 is the only number that is in the correct order.
+* 4 is the only number that is in the correct order.
+* The pattern is 3-2-1-5-4.
+
+D: 1-4-2-5-3
+* 1 is the only number that is in the correct order.
+* 4 is the only number that is in the correct order.
+* 2 is the only number that is in the correct order.
+* 5 is the only number that is in the correct order.
+* 3 is the only number that is in the correct order.
+* The pattern is 1-4-2-5-3.
+
+FINAL ANSWER: A",A,A,True,True
+"Divide the following six figures into two categories, so that each category displays its own pattern.",A,"REASONING:
+
+1. Triangle: The triangle has three sides, and each side is of equal length.
+2. Circle: The circle has a continuous curved line, and it is a closed shape.
+3. Square: The square has four sides, and each side is of equal length.
+4. Diamond: The diamond has four sides, and each side is of equal length.
+5. Star: The star has five points, and each point is of equal length.
+6. Octagon: The octagon has eight sides, and each side is of equal length.
+
+FINAL ANSWER: B",B,B,False,False
+"Choose the most appropriate option from the four given choices to fill in the question mark, so that the figures follow a pattern.",D,"REASONING:
+
+1. A: The first letter of the word ""dumb""
+2. B: The first letter of the word ""dumb""
+3. C: The first letter of the word ""dumb""
+4. D: The first letter of the word ""dumb""
+
+FINAL ANSWER: A",A,B,False,False
+"On a table, five polygon cards are stacked as shown. Each card is numbered according to the color shown at the bottom. The cards are removed one by one from the top of the stack. The possible order the cards are removed is: ",C,"REASONING:
+A: 2-4-1-3-5
+* 2 is the only number that is not in the correct order
+* 4 is the only number that is in the correct order
+* 1 is the only number that is not in the correct order
+* 3 is the only number that is in the correct order
+* 5 is the only number that is in the correct order
+
+B: 1-4-3-2-5
+* 1 is the only number that is in the correct order
+* 4 is the only number that is in the correct order
+* 3 is the only number that is in the correct order
+* 2 is the only number that is not in the correct order
+* 5 is the only number that is not in the correct order
+
+C: 2-1-4-3-5
+* 2 is the only number that is in the correct order
+* 1 is the only number that is in the correct order
+* 4 is the only number that is not in the correct order
+* 3 is the only number that is not in the correct order
+* 5 is the only number that is not in the correct order
+
+D: 1-2-3-5-4
+* 1 is the only number that is in the correct order
+* 2 is the only number that is in the correct order
+* 3 is the only number that is in the correct order
+* 5 is the only number that is in the correct order
+* 4 is the only number that is not in the correct order
+
+FINAL ANSWER: A",A,A,False,False
+"The entire pie seen in the image is divided among several children. Each child receives a piece of pie, and each piece of pie looks identical. What is the maximum possible number of children there? ",A,"REASONING:
+A: Each child receives a piece of pie, and each piece of pie looks identical. This means that each child receives the same number of pieces of pie. Since there are 9 pieces of pie, there are 9 children.
+B: Each child receives a piece of pie, and each piece of pie looks identical. This means that each child receives the same number of pieces of pie. Since there are 11 pieces of pie, there are 11 children.
+C: Each child receives a piece of pie, and each piece of pie looks identical. This means that each child receives the same number of pieces of pie. Since there are 7 pieces of pie, there are 7 children.
+D: Each child receives a piece of pie, and each piece of pie looks identical. This means that each child receives the same number of pieces of pie. Since there are 13 pieces of pie, there are 13 children.
+
+FINAL ANSWER: A",A,C,True,False
+The sticks are placed on top of each other. Stick 5 is at the bottom. Stick 7 is at the top. The stick in the middle is: ,D,"REASONING:
+A: The stick at the bottom is stick 5, which is the third stick from the bottom.
+B: The stick at the top is stick 7, which is the first stick from the top.
+C: The stick in the middle is stick 6, which is the second stick from the top.
+D: The stick in the middle is stick 2, which is the first stick from the bottom.
+
+FINAL ANSWER: C",C,B,False,False
+Some art work can be seen on a square-shaped transparent piece of foil as shown in <image1>. The foil is folded over twice as shown in the diagram. What does the foil look like after it has been folded over twice? Choose the correct option from <image2>,A,"REASONING:
+
+Option A: The foil is folded over twice, creating a square shape.
+Option B: The foil is folded over twice, creating a diamond shape.
+Option C: The foil is folded over twice, creating a rectangle shape.
+
+FINAL ANSWER: A",A,B,True,False
+"Peter places three building blocks on a table, as shown in <image1>. What does he see when he is looking at them from above? Choose the correct option from <image2>.",C,"REASONING:
+
+Option A: The blocks are arranged in a triangular shape, with the top block on the left, the middle block on the right, and the bottom block in the middle.
+Option B: The blocks are arranged in a square shape, with the top block on the left, the middle block on the right, and the bottom block in the middle.
+Option C: The blocks are arranged in a pyramid shape, with the top block on the left, the middle block on the right, and the bottom block on the left.
+
+FINAL ANSWER: C",C,B,True,False
+"At each of the vertices of a cube sits a Bunchkin. Two Bunchkins are said to be adjacent if and only if they sit at either end of one of the cube's edges. Each Bunchkin is either a 'truther', who always tells the truth, or a 'liar', who always lies. All eight Bunchkins say 'I am adjacent to exactly two liars'. What is the maximum number of Bunchkins who are telling the truth?",C,"REASONING:
+A: 2 Bunchkins are telling the truth, and they are adjacent to each other.
+B: 3 Bunchkins are lying, and they are all adjacent to each other.
+C: 4 Bunchkins are telling the truth, and they are all adjacent to each other.
+D: 5 Bunchkins are lying, and they are all adjacent to each other.
+
+FINAL ANSWER: B",B,A,False,False
+"Given a pair of chairs arranged at a specific angle, select the option from the four provided that matches the angle of the chairs in the question.",C,"REASONING:
+A: 180 degrees
+B: 90 degrees
+C: 120 degrees
+D: 240 degrees
+
+FINAL ANSWER: A",A,C,False,True
+"The entire pie seen in the image is divided among several children. Each child receives a piece of pie, and each piece of pie looks identical. What is the maximum possible number of children there? ",B,"REASONING:
+A: Each child receives a piece of pie, and each piece looks identical. This means that the number of pieces is the same as the number of children.
+B: Each child receives a piece of pie, and each piece looks identical. This means that the number of pieces is the same as the number of children.
+C: Each child receives a piece of pie, and each piece looks identical. This means that the number of pieces is the same as the number of children.
+D: Each child receives a piece of pie, and each piece looks identical. This means that the number of pieces is the same as the number of children.
+
+FINAL ANSWER: A",A,A,False,False
+"Six figures were drawn, one on each side of a cube, as shown in <image2>, in different positions. On the side that does not appear beside is the drawing in <image1>.
+What is the figure on the face opposite to it? Choose the correct option in <image3>.",B,"REASONING:
+
+1. The figure on the face opposite to the one in <image1> is a kangaroo.
+2. The figure on the face opposite to the one in <image2> is a star.
+3. The figure on the face opposite to the one in <image3> is a kangaroo.
+
+FINAL ANSWER: B",B,B,True,True
+"Choose the most appropriate option from the four given choices to fill in the question mark, so that the figures follow a pattern.",A,"REASONING:
+
+Option A: The figures are arranged in a square, and the question mark is placed in the middle.
+Option B: The figures are arranged in a triangular shape, and the question mark is placed at the top.
+Option C: The figures are arranged in a circular pattern, and the question mark is placed in the center.
+Option D: The figures are arranged in a diagonal line, and the question mark is placed at the end of the line.
+
+FINAL ANSWER: C",C,B,False,False
+Sandra created a stacking toy using 8 pieces. How many pieces will she see from top? ,C,"REASONING:
+A: 3 - The stacking toy has 8 pieces, and the top 3 pieces will be visible.
+B: 1 - The stacking toy has 8 pieces, and only the top piece will be visible.
+C: 2 - The stacking toy has 8 pieces, and the top 2 pieces will be visible.
+D: 8 - The stacking toy has 8 pieces, and all 8 pieces will be visible.
+
+FINAL ANSWER: A",A,A,False,False
+How many different digits can you find in this picture?,C,"REASONING:
+A: The cat has a tail, but it is not visible in the image.
+B: The cat has a tail, and it is visible in the image.
+C: The cat does not have a tail.
+D: The cat has a tail, but it is not visible in the image.
+
+FINAL ANSWER: B",B,B,False,False
+"You can move or rotate each shape in <image2> as you like, but you are not allowed to flip them over. What shape is not used in the puzzle in <image1>?",C,"REASONING:
+A: The shape is not used in the puzzle in <image1>.
+B: The shape is used in the puzzle in <image1>.
+C: The shape is not used in the puzzle in <image1>.
+D: The shape is used in the puzzle in <image1>.
+
+FINAL ANSWER: A",A,X,False,False
+"Divide the following six figures into two categories, so that each category displays its own pattern.",A,"REASONING:
+
+1. Triangle with one point at the top and one point at the bottom.
+2. Triangle with one point at the top and one point at the bottom.
+3. Triangle with one point at the top and one point at the bottom.
+4. Triangle with one point at the top and one point at the bottom.
+5. Triangle with one point at the top and one point at the bottom.
+6. Triangle with one point at the top and one point at the bottom.
+
+FINAL ANSWER: B",B,B,False,False

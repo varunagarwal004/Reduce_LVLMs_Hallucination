@@ -19,7 +19,9 @@ model = LlavaModel(
     model_name="llava-hf/llava-1.5-7b-hf",
     hf_token=os.getenv("HF_TOKEN"),
     system_prompt=(
-        "You are a helpful visual assistant that can solve visual puzzles and reasoning tasks."
+        "<role>\n"
+        "You are a helpful visual assistant that can solve visual puzzles and reasoning tasks.\n"
+        "</role>"
     ),
     prompt_prefix="Analyze this visual puzzle in the image and answer the following question:",
     prompt_suffix=(
@@ -33,10 +35,6 @@ cot_model = ChainOfThoughtLlava(
     cot_strategy="visual_puzzle",
 )
 # %%
-puzzles = load_dataset("neulab/VisualPuzzles", split="train")
-# %%
-puzzles[:10]
-# %%
 results_df = cot_model.evaluate_dataset_with_cot(
     dataset_name="neulab/VisualPuzzles",
     split="train",
@@ -44,7 +42,11 @@ results_df = cot_model.evaluate_dataset_with_cot(
     verbose=True,
 )
 # %%
-results_df.to_csv("llava_cot_puzzles.csv", index=False)
+results_df.to_csv("llava_cot_puzzles_2.csv", index=False)
+# %%
+puzzles = load_dataset("neulab/VisualPuzzles", split="train")
+# %%
+puzzles[:10]
 # %%
 images = puzzles["image"][:2]
 questions = puzzles["question"][:2]
