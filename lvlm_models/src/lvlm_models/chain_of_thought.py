@@ -5,22 +5,22 @@ from datasets import load_dataset
 from PIL import Image
 from tqdm import tqdm
 
-from lvlm_models.llava import LlavaModel
+from lvlm_models.base_lvlm import BaseLVLMModel
 
 
-class ChainOfThoughtLlava:
+class ChainOfThoughtLVLM:
     def __init__(
         self,
-        base_model: LlavaModel,
+        base_model: BaseLVLMModel,
         cot_prompt: str | None = None,
         answer_extraction_prompt: str = "FINAL ANSWER",
         cot_strategy: str = "visual_puzzle",
     ):
         """
-        Chain of Thought wrapper for LlavaModel.
+        Chain of Thought wrapper for BaseLVLMModel.
 
         Args:
-            base_model: The base LlavaModel instance
+            base_model: The base BaseLVLMModel instance
             cot_prompt: Custom prompt to encourage step-by-step reasoning (if None, uses
             strategy-specific default)
             answer_extraction_prompt: Prompt to extract final answer

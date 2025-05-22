@@ -9,8 +9,9 @@ import torch
 from datasets import load_dataset
 from dotenv import load_dotenv
 
+from lvlm_models.gemma3 import Gemma3Model
 from lvlm_models.llava import LlavaModel
-from lvlm_models.self_verification import SelfVerificationLlava
+from lvlm_models.self_verification import SelfVerificationLVLM
 
 # %%
 load_dotenv("../.env")
@@ -30,7 +31,7 @@ model = LlavaModel(
     ),
 )
 # %%
-sv_model = SelfVerificationLlava(
+sv_model = SelfVerificationLVLM(
     base_model=model,
     reasoning_strategy="visual_reasoning",
 )

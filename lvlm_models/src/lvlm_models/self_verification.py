@@ -5,23 +5,23 @@ from datasets import load_dataset
 from PIL import Image
 from tqdm import tqdm
 
-from lvlm_models.llava import LlavaModel
+from lvlm_models.base_lvlm import BaseLVLMModel
 
 
-class SelfVerificationLlava:
+class SelfVerificationLVLM:
     def __init__(
         self,
-        base_model: LlavaModel,
+        base_model: BaseLVLMModel,
         reasoning_prompt: str | None = None,
         verification_prompt: str | None = None,
         reasoning_strategy: str = "visual_reasoning",
         answer_extraction_format: str = "FINAL ANSWER:",
     ):
         """
-        Self-Verification wrapper for LlavaModel.
+        Self-Verification wrapper for BaseLVLMModel.
 
         Args:
-            base_model: The base LlavaModel instance
+            base_model: The base BaseLVLMModel instance
             reasoning_prompt: Custom prompt to encourage reasoning (if None, uses strategy-specific
             default)
             verification_prompt: Custom prompt for verification step (if None, uses default)
@@ -384,9 +384,15 @@ class SelfVerificationLlava:
                 # Update progress bar postfix with current accuracies
                 pbar.set_postfix(
                     {
-                        "Initial Acc": f"{sum(initial_correct_results) / len(initial_correct_results):.3f}",
-                        "Verified Acc": f"{sum(verified_correct_results) / len(verified_correct_results):.3f}",
-                        "Direct Acc": f"{sum(direct_correct_results) / len(direct_correct_results):.3f}",
+                        "Initial Acc": (
+                            f"{sum(initial_correct_results) / len(initial_correct_results):.3f}"
+                        ),
+                        "Verified Acc": (
+                            f"{sum(verified_correct_results) / len(verified_correct_results):.3f}"
+                        ),
+                        "Direct Acc": (
+                            f"{sum(direct_correct_results) / len(direct_correct_results):.3f}"
+                        ),
                     }
                 )
 

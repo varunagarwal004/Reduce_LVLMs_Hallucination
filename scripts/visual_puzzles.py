@@ -10,9 +10,11 @@ import torch
 import typer
 from dotenv import load_dotenv
 
-from lvlm_models.chain_of_thought import ChainOfThoughtLlava
+from lvlm_models.base_lvlm import BaseLVLMModel
+from lvlm_models.chain_of_thought import ChainOfThoughtLVLM
+from lvlm_models.gemma3 import Gemma3Model
 from lvlm_models.llava import LlavaModel
-from lvlm_models.self_verification import SelfVerificationLlava
+from lvlm_models.self_verification import SelfVerificationLVLM
 
 app = typer.Typer()
 
@@ -25,31 +27,53 @@ class Strategy(str, Enum):
     BOTH = "both"
 
 
-def setup_model() -> LlavaModel:
+def setup_model(model_name: str) -> BaseLVLMModel:
     """Initialize and return the base LlavaModel."""
     load_dotenv()
-
-    return LlavaModel(
-        model_name="llava-hf/llava-1.5-7b-hf",
-        hf_token=os.getenv("HF_TOKEN"),
-        system_prompt=(
-            "<role>\n"
-            "You are a helpful visual assistant that can solve visual puzzles and "
-            "reasoning tasks.\n"
-            "</role>"
-        ),
-        prompt_prefix="Analyze this visual puzzle in the image and answer the following question:",
-        prompt_suffix=(
-            "Choose the best answer from the provided options.\n"
-            "Respond only with the letter of the correct option, no extra text or punctuation."
-        ),
-    )
+    if model_name == "llava":
+        return LlavaModel(
+            model_name="llava-hf/llava-1.5-7b-hf",
+            hf_token=os.getenv("HF_TOKEN"),
+            system_prompt=(
+                "<role>\n"
+                "You are a helpful visual assistant that can solve visual puzzles and "
+                "reasoning tasks.\n"
+                "</role>"
+            ),
+            prompt_prefix=(
+                "Analyze this visual puzzle in the image and answer the following question:"
+            ),
+            prompt_suffix=(
+                "Choose the best answer from the provided options.\n"
+                "Respond only with the letter of the correct option, no extra text or punctuation."
+            ),
+        )
+    elif model_name == "gemma3":
+        return Gemma3Model(
+            model_name="google/gemma-3-4b-it",
+            hf_token=os.getenv("HF_TOKEN"),
+            system_prompt=(
+                "<role>\n"
+                "You are a helpful visual assistant that can solve visual puzzles and "
+                "reasoning tasks.\n"
+                "</role>"
+            ),
+            prompt_prefix=(
+                "Analyze this visual puzzle in the image and answer the following question:"
+            ),
+            prompt_suffix=(
+                "Choose the best answer from the provided options.\n"
+                "Respond only with the letter of the correct option, no extra text or punctuation."
+            ),
+        )
+    else:
+        raise ValueError(f"Model {model_name} not supported")
 
 
 def cleanup_model(
     model: Optional[LlavaModel] = None,
-    sv_model: Optional[SelfVerificationLlava] = None,
-    cot_model: Optional[ChainOfThoughtLlava] = None,
+    sv_model: Optional[SelfVerificationLVLM] = None,
+    cot_model: Optional[ChainOfThoughtLVLM] = None,
 ) -> None:
     """Clean up models and free GPU memory."""
     if model:
@@ -63,7 +87,7 @@ def cleanup_model(
 
 
 def run_self_verification(
-    model: LlavaModel,
+    model: BaseLVLMModel,
     output_path: Path,
     split: str,
     amount: int,
@@ -73,7 +97,7 @@ def run_self_verification(
     verbose: bool,
 ) -> None:
     """Run evaluation using self-verification strategy."""
-    sv_model = SelfVerificationLlava(
+    sv_model = SelfVerificationLVLM(
         base_model=model,
         reasoning_strategy="visual_reasoning",
     )
@@ -88,12 +112,14 @@ def run_self_verification(
         verbose=verbose,
     )
 
-    results_df.to_csv(output_path / "sv_results.csv", index=False)
+    results_df.to_csv(
+        output_path / f"{model.model_name.split('/')[-1]}_{amount}_sv_results.csv", index=False
+    )
     cleanup_model(sv_model=sv_model)
 
 
 def run_chain_of_thought(
-    model: LlavaModel,
+    model: BaseLVLMModel,
     output_path: Path,
     split: str,
     amount: int,
@@ -102,7 +128,7 @@ def run_chain_of_thought(
     verbose: bool,
 ) -> None:
     """Run evaluation using chain-of-thought strategy."""
-    cot_model = ChainOfThoughtLlava(
+    cot_model = ChainOfThoughtLVLM(
         base_model=model,
         cot_strategy="visual_puzzle",
     )
@@ -116,12 +142,20 @@ def run_chain_of_thought(
         verbose=verbose,
     )
 
-    results_df.to_csv(output_path / "cot_results.csv", index=False)
+    results_df.to_csv(
+        output_path / f"{model.model_name.split('/')[-1]}_{amount}_cot_results.csv", index=False
+    )
     cleanup_model(cot_model=cot_model)
 
 
 @app.command()
 def evaluate(
+    model_name: str = typer.Option(
+        "llava",
+        "--model",
+        "-m",
+        help="Model to use",
+    ),
     strategy: Strategy = typer.Option(
         Strategy.BOTH,
         "--strategy",
@@ -173,7 +207,7 @@ def evaluate(
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
-    model = setup_model()
+    model = setup_model(model_name)
 
     try:
         if strategy in (Strategy.SELF_VERIFICATION, Strategy.BOTH):
