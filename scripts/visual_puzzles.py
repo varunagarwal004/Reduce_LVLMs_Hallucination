@@ -14,6 +14,7 @@ from lvlm_models.base_lvlm import BaseLVLMModel
 from lvlm_models.chain_of_thought import ChainOfThoughtLVLM
 from lvlm_models.gemma3 import Gemma3Model
 from lvlm_models.llava import LlavaModel
+from lvlm_models.openai import OpenAIVisionModel
 from lvlm_models.self_verification import SelfVerificationLVLM
 
 app = typer.Typer()
@@ -52,6 +53,24 @@ def setup_model(model_name: str) -> BaseLVLMModel:
         return Gemma3Model(
             model_name="google/gemma-3-4b-it",
             hf_token=os.getenv("HF_TOKEN"),
+            system_prompt=(
+                "<role>\n"
+                "You are a helpful visual assistant that can solve visual puzzles and "
+                "reasoning tasks.\n"
+                "</role>"
+            ),
+            prompt_prefix=(
+                "Analyze this visual puzzle in the image and answer the following question:"
+            ),
+            prompt_suffix=(
+                "Choose the best answer from the provided options.\n"
+                "Respond only with the letter of the correct option, no extra text or punctuation."
+            ),
+        )
+    elif model_name == "openai":
+        return OpenAIVisionModel(
+            model_name="gpt-4.1-mini-2025-04-14",
+            api_key=os.getenv("OPENAI_API_KEY"),
             system_prompt=(
                 "<role>\n"
                 "You are a helpful visual assistant that can solve visual puzzles and "

@@ -168,8 +168,12 @@ class SelfVerificationLVLM:
                     f"({letter})",
                     f"{letter})",
                     f"answer is {letter}",
+                    f"answer is option {letter}",
                     f"choose {letter}",
                     f"select {letter}",
+                    f"answer: {letter}",
+                    f"Answer: {letter}",
+                    f"Answer: ({letter})",
                 ]
                 for pattern in patterns:
                     if pattern in reasoning:
@@ -193,14 +197,17 @@ class SelfVerificationLVLM:
         Returns:
             Extracted correct answer
         """
-        if "correct answer is" in verification.lower():
-            answer_part = verification.lower().split("correct answer is")[-1].strip()
-            if "." in answer_part:
-                return answer_part.split(".")[0].strip()
-            elif "\n" in answer_part:
-                return answer_part.split("\n")[0].strip()
-            else:
-                return answer_part.strip()
+        answer_markers = ["correct answer is", "correct answer:", "correct answer"]
+        for marker in answer_markers:
+            if marker in verification.lower():
+                answer_part = verification.lower().split(marker)[-1].strip()
+                if answer_part is None:
+                    continue
+                answer_letter = answer_part.split(" ")[0].strip()
+                if options is not None and answer_letter in options:
+                    return answer_letter
+                else:
+                    return answer_part.strip()
 
         # Try to find an option letter in the verification
         if options:

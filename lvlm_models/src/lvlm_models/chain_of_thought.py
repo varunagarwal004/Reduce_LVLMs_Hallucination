@@ -139,8 +139,12 @@ class ChainOfThoughtLVLM:
                     f"({letter})",
                     f"{letter})",
                     f"answer is {letter}",
+                    f"answer is option {letter}",
                     f"choose {letter}",
                     f"select {letter}",
+                    f"answer: {letter}",
+                    f"Answer: {letter}",
+                    f"Answer: ({letter})",
                 ]
                 for pattern in patterns:
                     if pattern in reasoning:

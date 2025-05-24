@@ -125,6 +125,9 @@ class OpenAIVisionModel(BaseLVLMModel):
             response = self.client.chat.completions.create(
                 model=self.model_name, messages=messages, max_tokens=1000
             )
+            input_cost = 0.4e-6 * response.usage.prompt_tokens
+            output_cost = 1.6e-6 * response.usage.completion_tokens
+            print(f"Total cost: {(input_cost + output_cost):.6f} USD")
 
             return response.choices[0].message.content
         except Exception as e:

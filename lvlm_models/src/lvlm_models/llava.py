@@ -2,7 +2,6 @@ import base64
 import io
 
 import torch
-from datasets import Dataset
 from PIL import Image
 from transformers.models.llava import LlavaForConditionalGeneration
 from transformers.models.llava.processing_llava import LlavaProcessor
@@ -181,59 +180,3 @@ class LlavaModel(BaseLVLMModel):
             decoded_responses.append(decoded)
 
         return decoded_responses
-
-    def evaluate_dataset(
-        self,
-        dataset: Dataset,
-        amount: int = 100,
-        batch_size: int = 1,
-        rand: bool = False,
-        seed: int = 42,
-        verbose: bool = False,
-    ) -> tuple[list[bool], list[str]]:
-        """
-        Evaluate the model on a dataset.
-        Args:
-            dataset (Dataset): The dataset to evaluate on.
-            amount (int): The number of datapoints to evaluate on.
-            batch_size (int): The batch size to use.
-            rand (bool): Whether to shuffle the dataset.
-            seed (int): The seed to use for shuffling.
-            verbose (bool): Whether to print the results.
-        Returns:
-            tuple[list[bool], list[str]]: The results and responses.
-        """
-        if rand:
-            dataset = dataset.shuffle(seed=seed)
-        dataset = dataset.select(range(amount))
-
-        images = dataset["image"]
-        questions = dataset["question"]
-        options = dataset["options"]
-        answers = dataset["answer"]
-
-        results = []
-        responses = []
-
-        for i in range(0, amount, batch_size):
-            batch_end = min(i + batch_size, amount)
-            batch_images = images[i:batch_end]
-            batch_questions = questions[i:batch_end]
-            batch_options = options[i:batch_end]
-            batch_answers = answers[i:batch_end]
-
-            batch_responses = self.generate_response_batch(
-                batch_images, batch_questions, batch_options
-            )
-
-            for j, response in enumerate(batch_responses):
-                correct = response.strip().upper() == batch_answers[i + j].strip().upper()
-                results.append(correct)
-                responses.append(response)
-
-                if verbose:
-                    print(f"Question: {batch_questions[j]}")
-                    print(f"Response: {response}")
-                    print(f"Correct: {correct}\n")
-
-        return results, responses

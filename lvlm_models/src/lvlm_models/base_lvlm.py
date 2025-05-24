@@ -128,13 +128,14 @@ class BaseLVLMModel(ABC):
             )
 
             for j, response in enumerate(batch_responses):
-                correct = response.strip().upper() == batch_answers[i + j].strip().upper()
+                correct = response.strip().upper() == batch_answers[j].strip().upper()
                 results.append(correct)
                 responses.append(response)
 
                 if verbose:
                     print(f"Question: {batch_questions[j]}")
                     print(f"Response: {response}")
+                    print(f"Answer: {batch_answers[j]}")
                     print(f"Correct: {correct}\n")
 
         return results, responses
