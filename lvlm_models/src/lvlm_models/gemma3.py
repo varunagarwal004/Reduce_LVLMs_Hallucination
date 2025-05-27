@@ -1,17 +1,13 @@
-import base64
-import io
-
 import torch
 from PIL import Image
-from transformers.models.llava import LlavaForConditionalGeneration
-from transformers.models.llava.processing_llava import LlavaProcessor
+from transformers import AutoProcessor, Gemma3ForConditionalGeneration
 
 from lvlm_models.base_lvlm import BaseLVLMModel
 
 
-class LlavaModel(BaseLVLMModel):
+class Gemma3Model(BaseLVLMModel):
     def _load_model(self):
-        self.model = LlavaForConditionalGeneration.from_pretrained(
+        self.model = Gemma3ForConditionalGeneration.from_pretrained(
             self.model_name,
             torch_dtype=torch.bfloat16,
             token=self.hf_token,
@@ -19,26 +15,7 @@ class LlavaModel(BaseLVLMModel):
         ).eval()
 
     def _load_processor(self):
-        self.processor = LlavaProcessor.from_pretrained(self.model_name)
-
-    def process_image(self, image: Image.Image) -> str | None:
-        """
-        Process the image and return the base64 encoded image.
-        Args:
-            image (Image.Image): The image to process.
-        Returns:
-            The base64 encoded image.
-        """
-        try:
-            buffer = io.BytesIO()
-            image.save(buffer, image.format if image.format else "JPEG")
-            im = buffer.getvalue()
-            base64_image = base64.b64encode(im).decode("utf-8")
-            return base64_image
-        except Exception as e:
-            print(f"Error: {e}")
-            print(image.format, image.format_description)
-            return None
+        self.processor = AutoProcessor.from_pretrained(self.model_name)
 
     def format_messages(
         self,
@@ -48,7 +25,7 @@ class LlavaModel(BaseLVLMModel):
         use_prefix_suffix: bool | None = None,
     ) -> list[dict]:
         """
-        Format the messages for the VLLM.
+        Format the messages for the Gemma3 model.
         Args:
             image (Image.Image): The image to process.
             prompt (str): The prompt to use.
@@ -56,18 +33,12 @@ class LlavaModel(BaseLVLMModel):
         Returns:
             The formatted messages.
         """
-        base64_image = self.process_image(image)
-        if base64_image is None:
-            return None
         messages = [
-            {
-                "role": "system",
-                "content": [{"type": "text", "text": self.system_prompt}],
-            },
+            {"role": "system", "content": [{"type": "text", "text": self.system_prompt}]},
             {
                 "role": "user",
                 "content": [
-                    {"type": "image", "image": base64_image},
+                    {"type": "image", "image": image},
                     {
                         "type": "text",
                         "text": (f"{self.prompt_prefix}\n{prompt}\n{self.prompt_suffix}\n")
@@ -77,6 +48,7 @@ class LlavaModel(BaseLVLMModel):
                 ],
             },
         ]
+
         if options is not None:
             options_str = [
                 f"{letter}: {option}" for letter, option in zip(["A", "B", "C", "D"], options)
@@ -96,10 +68,10 @@ class LlavaModel(BaseLVLMModel):
         use_prefix_suffix: bool | None = None,
     ) -> str | None:
         """
-        Generate text from the image and prompt.
+        Generate text from the image and prompt using Gemma3.
         Args:
             image (Image.Image): The image to process.
-            prompt (str): The prompt to use.
+            question (str): The prompt to use.
             options (list[str] | None): The options to use. Default is None.
         Returns:
             The generated text.
@@ -117,8 +89,6 @@ class LlavaModel(BaseLVLMModel):
 
         with torch.inference_mode():
             outputs = self.model.generate(**inputs, max_new_tokens=1000, do_sample=False)
-            # Output contains the entire sequence (system and user messages), so we need to slice
-            # it to get the generation
             generation = outputs[0][input_len:]
 
         decoded = self.processor.decode(generation, skip_special_tokens=True)
@@ -132,7 +102,7 @@ class LlavaModel(BaseLVLMModel):
         use_prefix_suffix: bool | None = None,
     ) -> list[str]:
         """
-        Generate responses for a batch of images and questions efficiently.
+        Generate responses for a batch of images and questions efficiently with Gemma3.
         Args:
             images (list[Image.Image]): The images to process.
             questions (list[str]): The questions to use.
@@ -144,11 +114,8 @@ class LlavaModel(BaseLVLMModel):
         for i, (image, question) in enumerate(zip(images, questions)):
             opts = options[i] if options is not None else None
             msg = self.format_messages(image, question, opts, use_prefix_suffix)
-            if msg is None:  # Handle potential image processing failures
-                raise ValueError(f"Failed to process image at index {i}")
             messages.append(msg)
 
-        # We need padding and truncation for batched processing
         inputs = self.processor.apply_chat_template(
             messages,
             add_generation_prompt=True,
@@ -160,8 +127,6 @@ class LlavaModel(BaseLVLMModel):
             return_tensors="pt",
         ).to(self.device, dtype=torch.bfloat16)
 
-        # For batched input with padding, we need to know where each sequence starts
-        # This is the length of input_ids for each sample in the batch
         input_lens = inputs["attention_mask"].sum(dim=1).tolist()
 
         with torch.inference_mode():
@@ -174,7 +139,6 @@ class LlavaModel(BaseLVLMModel):
 
         decoded_responses = []
         for i, output in enumerate(outputs):
-            # Extract only the generated part for each sample
             generation = output[input_lens[i] :]
             decoded = self.processor.decode(generation, skip_special_tokens=True)
             decoded_responses.append(decoded)

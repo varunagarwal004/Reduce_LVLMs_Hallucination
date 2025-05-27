@@ -5,23 +5,23 @@ from datasets import load_dataset
 from PIL import Image
 from tqdm import tqdm
 
-from lvlm_models.llava import LlavaModel
+from lvlm_models.base_lvlm import BaseLVLMModel
 
 
-class SelfVerificationLlava:
+class SelfVerificationLVLM:
     def __init__(
         self,
-        base_model: LlavaModel,
+        base_model: BaseLVLMModel,
         reasoning_prompt: str | None = None,
         verification_prompt: str | None = None,
         reasoning_strategy: str = "visual_reasoning",
         answer_extraction_format: str = "FINAL ANSWER:",
     ):
         """
-        Self-Verification wrapper for LlavaModel.
+        Self-Verification wrapper for BaseLVLMModel.
 
         Args:
-            base_model: The base LlavaModel instance
+            base_model: The base BaseLVLMModel instance
             reasoning_prompt: Custom prompt to encourage reasoning (if None, uses strategy-specific
             default)
             verification_prompt: Custom prompt for verification step (if None, uses default)
@@ -168,8 +168,12 @@ class SelfVerificationLlava:
                     f"({letter})",
                     f"{letter})",
                     f"answer is {letter}",
+                    f"answer is option {letter}",
                     f"choose {letter}",
                     f"select {letter}",
+                    f"answer: {letter}",
+                    f"Answer: {letter}",
+                    f"Answer: ({letter})",
                 ]
                 for pattern in patterns:
                     if pattern in reasoning:
@@ -193,14 +197,17 @@ class SelfVerificationLlava:
         Returns:
             Extracted correct answer
         """
-        if "correct answer is" in verification.lower():
-            answer_part = verification.lower().split("correct answer is")[-1].strip()
-            if "." in answer_part:
-                return answer_part.split(".")[0].strip()
-            elif "\n" in answer_part:
-                return answer_part.split("\n")[0].strip()
-            else:
-                return answer_part.strip()
+        answer_markers = ["correct answer is", "correct answer:", "correct answer"]
+        for marker in answer_markers:
+            if marker in verification.lower():
+                answer_part = verification.lower().split(marker)[-1].strip()
+                if answer_part is None:
+                    continue
+                answer_letter = answer_part.split(" ")[0].strip()
+                if options is not None and answer_letter in options:
+                    return answer_letter
+                else:
+                    return answer_part.strip()
 
         # Try to find an option letter in the verification
         if options:
@@ -384,9 +391,15 @@ class SelfVerificationLlava:
                 # Update progress bar postfix with current accuracies
                 pbar.set_postfix(
                     {
-                        "Initial Acc": f"{sum(initial_correct_results) / len(initial_correct_results):.3f}",
-                        "Verified Acc": f"{sum(verified_correct_results) / len(verified_correct_results):.3f}",
-                        "Direct Acc": f"{sum(direct_correct_results) / len(direct_correct_results):.3f}",
+                        "Initial Acc": (
+                            f"{sum(initial_correct_results) / len(initial_correct_results):.3f}"
+                        ),
+                        "Verified Acc": (
+                            f"{sum(verified_correct_results) / len(verified_correct_results):.3f}"
+                        ),
+                        "Direct Acc": (
+                            f"{sum(direct_correct_results) / len(direct_correct_results):.3f}"
+                        ),
                     }
                 )
 
