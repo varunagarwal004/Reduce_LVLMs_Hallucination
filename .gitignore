@@ -86,3 +86,6 @@ dmypy.json
 .pytype/
 
 .DS_Store
+
+# Ignore all images in dx&llava folder except for the images folder
+!/dx&llava/images/*
