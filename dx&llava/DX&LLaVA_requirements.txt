@@ -1,0 +1,7 @@
+dds-cloudapi-sdk
+supervision
+pycocotools
+numpy
+opencv-python
+gradio
+bitsandbytes
