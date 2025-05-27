@@ -25,7 +25,7 @@ class ChainOfThoughtLVLM:
             strategy-specific default)
             answer_extraction_prompt: Prompt to extract final answer
             cot_strategy: Strategy for chain of thought, options:
-                          "basic", "detailed", "visual_puzzle"
+                          "basic", "detailed", "visual_puzzle", "yes_no_object"
         """
         self.model = base_model
         self.answer_extraction_prompt = answer_extraction_prompt
@@ -78,6 +78,26 @@ class ChainOfThoughtLVLM:
                     "2. FINAL VERIFICATION:\n"
                     "   - Double-check that the chosen answer is consistent with all observed "
                     "patterns\n"
+                    "</strategy>\n" + self.answer_format_instruction
+                )
+            elif cot_strategy == "yes_no_object":
+                self.cot_prompt = (
+                    "<objective>\n"
+                    "Determine whether the specific object mentioned in the question is present in the image.\n"
+                    "Answer with only 'Yes' or 'No'.\n"
+                    "</objective>\n"
+                    "<strategy>\n"
+                    "Carefully analyze the image to determine if the object is present:\n\n"
+                    "1. OBJECT IDENTIFICATION:\n"
+                    "   - Look for the exact object mentioned in the question\n"
+                    "   - Pay attention to the entire image, including foreground and background\n"
+                    "   - Consider partially visible objects or objects that might be occluded\n\n"
+                    "2. CAREFUL EXAMINATION:\n"
+                    "   - Check for similar-looking objects that might be confused with the target\n"
+                    "   - Consider different perspectives, sizes, and variations of the object\n\n"
+                    "3. VERIFICATION:\n"
+                    "   - Confirm presence or absence with high confidence\n"
+                    "   - Be conservative - only answer 'Yes' if you're certain the object is there\n"
                     "</strategy>\n" + self.answer_format_instruction
                 )
             else:
@@ -409,6 +429,8 @@ class ChainOfThoughtLVLM:
         print("--------------------------------")
         print(f"CoT Accuracy: {cot_accuracy}")
         print(f"Direct Accuracy: {direct_accuracy}")
+        if hasattr(self.model, "running_cost"):
+            print(f"Total cost: {(self.model.running_cost):.6f} USD")
         print("--------------------------------")
 
         return pd.DataFrame(

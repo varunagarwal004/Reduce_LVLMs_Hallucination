@@ -26,7 +26,7 @@ class SelfVerificationLVLM:
             default)
             verification_prompt: Custom prompt for verification step (if None, uses default)
             reasoning_strategy: Strategy for initial reasoning, options:
-                                "basic", "detailed", "visual_reasoning"
+                                "basic", "detailed", "visual_reasoning", "yes_no_object"
             answer_extraction_format: Format marker to extract final answer
         """
         self.model = base_model
@@ -76,6 +76,29 @@ class SelfVerificationLVLM:
                     "2. ASSESS EACH OPTION:\n"
                     "   - Consider each option systematically\n"
                     "   - Evaluate how well each option aligns with the image and question\n\n"
+                    "</strategy>\n" + self.answer_format_instruction
+                )
+            elif reasoning_strategy == "yes_no_object":
+                self.reasoning_prompt = (
+                    "<objective>\n"
+                    "Determine whether the specific object mentioned in the question is present in "
+                    "the image.\n"
+                    "Answer with only 'Yes' or 'No'.\n"
+                    "</objective>\n"
+                    "<strategy>\n"
+                    "Carefully analyze the image to determine if the object is present:\n\n"
+                    "1. OBJECT IDENTIFICATION:\n"
+                    "   - Look for the exact object mentioned in the question\n"
+                    "   - Pay attention to the entire image, including foreground and background\n"
+                    "   - Consider partially visible objects or objects that might be occluded\n\n"
+                    "2. CAREFUL EXAMINATION:\n"
+                    "   - Check for similar-looking objects that might be confused with the "
+                    "target\n"
+                    "   - Consider different perspectives, sizes, and variations of the object\n\n"
+                    "3. VERIFICATION:\n"
+                    "   - Confirm presence or absence with high confidence\n"
+                    "   - Be conservative - only answer 'Yes' if you're certain the object is "
+                    "there\n"
                     "</strategy>\n" + self.answer_format_instruction
                 )
             else:
@@ -424,6 +447,9 @@ class SelfVerificationLVLM:
         print(f"Initial Accuracy (First Pass): {initial_accuracy}")
         print(f"Verified Accuracy (After Verification): {verified_accuracy}")
         print(f"Direct Accuracy (No Verification): {direct_accuracy}")
+        if hasattr(self.model, "running_cost"):
+            print(f"Total cost: {(self.model.running_cost):.6f} USD")
+        print("--------------------------------")
 
         # Return only the raw responses and reasonings in the DataFrame
         return pd.DataFrame(
