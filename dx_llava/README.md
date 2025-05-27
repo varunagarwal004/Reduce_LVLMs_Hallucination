@@ -18,7 +18,7 @@ The DINO-X & LLaVA integration was developed and evaluated through systematic ex
 
 The final evaluation results demonstrate the enhanced performance of the DINO-X & LLaVA system compared to baseline models. These results are visualized in the performance comparison chart below:
 
-![Performance Comparison](images/results.png)
+![Performance Comparison](images/Results.png)
 
 The chart shows the accuracy improvements achieved through the DINO-X enhanced prompting approach across different question types and image categories.
 
@@ -77,7 +77,7 @@ python DX&LLaVA_main.py
 3. **Dual Processing**: The system processes both the original and enhanced prompts through LLaVA
 4. **Response Comparison**: Users can compare how object detection context affects the model's responses
 
-![Demo Image](images/demo_2.png "DINO-LLaVA Demo")
+![Demo Image](images/Demo_2.png "DINO-LLaVA Demo")
 
 ## Security Note
 
