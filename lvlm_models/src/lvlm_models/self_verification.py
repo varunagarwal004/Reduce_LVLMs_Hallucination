@@ -140,7 +140,10 @@ class SelfVerificationLVLM:
         # Step 1: Generate initial reasoning
         reasoning_question = f"{self.reasoning_prompt}\n\nQUESTION: {question}"
         initial_reasoning = self.model.generate_response(
-            image=image, question=reasoning_question, options=options, use_prefix_suffix=False
+            image=image,
+            question=reasoning_question,
+            options=options if self.reasoning_strategy == "visual_reasoning" else None,
+            use_prefix_suffix=False,
         )
         initial_answer = self._extract_answer(initial_reasoning, options)
 
@@ -151,7 +154,10 @@ class SelfVerificationLVLM:
             f"<PREVIOUS RESPONSE>\n{initial_reasoning}\n</PREVIOUS RESPONSE>\n"
         )
         verification = self.model.generate_response(
-            image=image, question=verification_question, options=options, use_prefix_suffix=False
+            image=image,
+            question=verification_question,
+            options=options if self.reasoning_strategy == "visual_reasoning" else None,
+            use_prefix_suffix=False,
         )
 
         # Extract final answer based on verification
@@ -164,7 +170,7 @@ class SelfVerificationLVLM:
 
     def _extract_answer(self, reasoning: str, options: Optional[List[str]] = None) -> str:
         """
-        Extract the final answer from the reasoning.
+        Extract the final answer from the reasoning using a specific format.
 
         Args:
             reasoning: Full reasoning text
@@ -173,8 +179,8 @@ class SelfVerificationLVLM:
         Returns:
             Extracted final answer
         """
-        if self.answer_extraction_format in reasoning:
-            answer_part = reasoning.split(self.answer_extraction_format)[-1].strip()
+        if "FINAL ANSWER:" in reasoning:
+            answer_part = reasoning.split("FINAL ANSWER:")[-1].strip()
             if "." in answer_part:
                 return answer_part.split(".")[0].strip()
             elif "\n" in answer_part:
@@ -183,24 +189,28 @@ class SelfVerificationLVLM:
                 return answer_part.strip()
 
         if options:
-            option_letters = ["A", "B", "C", "D"]
-            for letter in option_letters:
+            option_values = (
+                ["A", "B", "C", "D"]
+                if self.reasoning_strategy == "visual_reasoning"
+                else ["YES", "NO"]
+            )
+            for value in option_values:
                 patterns = [
-                    f"Option {letter}",
-                    f"option {letter}",
-                    f"({letter})",
-                    f"{letter})",
-                    f"answer is {letter}",
-                    f"answer is option {letter}",
-                    f"choose {letter}",
-                    f"select {letter}",
-                    f"answer: {letter}",
-                    f"Answer: {letter}",
-                    f"Answer: ({letter})",
+                    f"Option {value}",
+                    f"option {value}",
+                    f"({value})",
+                    f"{value})",
+                    f"answer is {value}",
+                    f"answer is option {value}",
+                    f"choose {value}",
+                    f"select {value}",
+                    f"answer: {value}",
+                    f"Answer: {value}",
+                    f"Answer: ({value})",
                 ]
                 for pattern in patterns:
                     if pattern in reasoning:
-                        idx = option_letters.index(letter)
+                        idx = option_values.index(value)
                         if idx < len(options):
                             return options[idx]
 
@@ -226,26 +236,30 @@ class SelfVerificationLVLM:
                 answer_part = verification.lower().split(marker)[-1].strip()
                 if answer_part is None:
                     continue
-                answer_letter = answer_part.split(" ")[0].strip()
-                if options is not None and answer_letter in options:
-                    return answer_letter
+                answer_value = answer_part.split(" ")[0].strip()
+                if options is not None and answer_value in options:
+                    return answer_value
                 else:
                     return answer_part.strip()
 
         # Try to find an option letter in the verification
         if options:
-            option_letters = ["A", "B", "C", "D"]
-            for letter in option_letters:
+            option_values = (
+                ["A", "B", "C", "D"]
+                if self.reasoning_strategy == "visual_reasoning"
+                else ["YES", "NO"]
+            )
+            for value in option_values:
                 patterns = [
-                    f"option {letter}",
-                    f"Option {letter}",
-                    f"({letter})",
-                    f"{letter})",
-                    f"should be {letter}",
+                    f"option {value}",
+                    f"Option {value}",
+                    f"({value})",
+                    f"{value})",
+                    f"should be {value}",
                 ]
                 for pattern in patterns:
                     if pattern in verification:
-                        idx = option_letters.index(letter)
+                        idx = option_values.index(value)
                         if idx < len(options):
                             return options[idx]
 
@@ -316,7 +330,10 @@ class SelfVerificationLVLM:
 
         images = dataset["image"]
         questions = dataset["question"]
-        options = dataset["options"]
+        if "options" in dataset:
+            options = dataset["options"]
+        else:
+            options = ["YES", "NO"] * len(dataset)
         answers = dataset["answer"]
 
         # Track all the raw responses

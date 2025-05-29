@@ -85,7 +85,7 @@ class ChainOfThoughtLVLM:
                     "<objective>\n"
                     "Determine whether the specific object mentioned in the question is present in "
                     "the image.\n"
-                    "Answer with only 'Yes' or 'No'.\n"
+                    "Answer with only 'YES' or 'NO'.\n"
                     "</objective>\n"
                     "<strategy>\n"
                     "Carefully analyze the image to determine if the object is present:\n\n"
@@ -99,7 +99,7 @@ class ChainOfThoughtLVLM:
                     "   - Consider different perspectives, sizes, and variations of the object\n\n"
                     "3. VERIFICATION:\n"
                     "   - Confirm presence or absence with high confidence\n"
-                    "   - Be conservative - only answer 'Yes' if you're certain the object is "
+                    "   - Be conservative - only answer 'YES' if you're certain the object is "
                     "there\n"
                     "</strategy>\n" + self.answer_format_instruction
                 )
@@ -126,7 +126,10 @@ class ChainOfThoughtLVLM:
         cot_question = f"{self.cot_prompt}\n\n<QUESTION>\n{question}\n</QUESTION>"
 
         reasoning = self.model.generate_response(
-            image=image, question=cot_question, options=options, use_prefix_suffix=False
+            image=image,
+            question=cot_question,
+            options=options if self.cot_strategy == "visual_puzzle" else None,
+            use_prefix_suffix=False,
         )
 
         final_answer = self._extract_answer(reasoning, options)
@@ -154,24 +157,26 @@ class ChainOfThoughtLVLM:
                 return answer_part.strip()
 
         if options:
-            option_letters = ["A", "B", "C", "D"]
-            for letter in option_letters:
+            option_values = (
+                ["A", "B", "C", "D"] if self.cot_strategy == "visual_puzzle" else ["YES", "NO"]
+            )
+            for value in option_values:
                 patterns = [
-                    f"Option {letter}",
-                    f"option {letter}",
-                    f"({letter})",
-                    f"{letter})",
-                    f"answer is {letter}",
-                    f"answer is option {letter}",
-                    f"choose {letter}",
-                    f"select {letter}",
-                    f"answer: {letter}",
-                    f"Answer: {letter}",
-                    f"Answer: ({letter})",
+                    f"Option {value}",
+                    f"option {value}",
+                    f"({value})",
+                    f"{value})",
+                    f"answer is {value}",
+                    f"answer is option {value}",
+                    f"choose {value}",
+                    f"select {value}",
+                    f"answer: {value}",
+                    f"Answer: {value}",
+                    f"Answer: ({value})",
                 ]
                 for pattern in patterns:
                     if pattern in reasoning:
-                        idx = option_letters.index(letter)
+                        idx = option_values.index(value)
                         if idx < len(options):
                             return options[idx]
 
@@ -198,7 +203,10 @@ class ChainOfThoughtLVLM:
         cot_questions = [f"{question}\n\n{self.cot_prompt}" for question in questions]
 
         reasonings = self.model.generate_response_batch(
-            images=images, questions=cot_questions, options=options, use_prefix_suffix=False
+            images=images,
+            questions=cot_questions,
+            options=options if self.cot_strategy == "visual_puzzle" else None,
+            use_prefix_suffix=False,
         )
 
         results = []
@@ -244,7 +252,10 @@ class ChainOfThoughtLVLM:
 
         images = dataset["image"]
         questions = dataset["question"]
-        options = dataset["options"]
+        if "options" in dataset:
+            options = dataset["options"]
+        else:
+            options = ["YES", "NO"] * len(dataset)
         answers = dataset["answer"]
 
         cot_results = []
@@ -367,7 +378,10 @@ class ChainOfThoughtLVLM:
 
         images = dataset["image"]
         questions = dataset["question"]
-        options = dataset["options"]
+        if "options" in dataset:
+            options = dataset["options"]
+        else:
+            options = ["YES", "NO"] * len(dataset)
         answers = dataset["answer"]
 
         cot_results = []

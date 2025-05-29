@@ -110,7 +110,10 @@ class BaseLVLMModel(ABC):
 
         images = dataset["image"]
         questions = dataset["question"]
-        options = dataset["options"]
+        if "options" in dataset:
+            options = dataset["options"]
+        else:
+            options = None
         answers = dataset["answer"]
 
         results = []
