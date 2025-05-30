@@ -1,0 +1,201 @@
+question,answer,initial_reasoning,initial_answer,verification_response,final_answer,direct_answer,initial_correct,verified_correct,direct_correct,false_positive,false_negative
+Is there a chair in the image?,no,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,False,False,False,True,False
+Is there a chair in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a baseball glove in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a bowl in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a dining table in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a dining table in the image?,yes,No,No,VERIFICATION: CORRECT,No,Yes,False,False,True,False,True
+Is there a baseball glove in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a knife in the image?,no,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,No,True,False,True,False,False
+Is there a sports ball in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a car in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a cell phone in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a couch in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a chair in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a traffic light in the image?,yes,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,False,False,True,False,False
+Is there a traffic light in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a spoon in the image?,yes,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,False,False,True,False,False
+Is there a tv in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a snowboard in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a handbag in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a book in the image?,yes,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,False,False,True,False,False
+Is there a dining table in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a potted plant in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a dining table in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a dining table in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a book in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a laptop in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a chair in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a backpack in the image?,yes,No,No,VERIFICATION: CORRECT,No,Yes,False,False,True,False,True
+Is there a dining table in the image?,no,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,False,False,False
+Is there a truck in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a bowl in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a car in the image?,yes,No,No,VERIFICATION: CORRECT,No,Yes,False,False,True,False,True
+Is there a handbag in the image?,no,No,No,VERIFICATION: CORRECT,No,Yes,True,True,False,False,False
+Is there a chair in the image?,yes,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,False,False,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a fire hydrant in the image?,no,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,No,True,False,True,False,False
+Is there a tv in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a handbag in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a tv in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a couch in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a keyboard in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a boat in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a cup in the image?,no,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,False,False,False
+Is there a truck in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a bottle in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a dining table in the image?,yes,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,False,False,True,False,False
+Is there a vase in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a scissors in the image?,yes,No,No,VERIFICATION: CORRECT,No,Yes,False,False,True,False,True
+Is there a chair in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a parking meter in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a wine glass in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a dining table in the image?,no,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,False,False,False
+Is there a dining table in the image?,yes,No,No,VERIFICATION: CORRECT,No,Yes,False,False,True,False,True
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a stop sign in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a couch in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a microwave in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a backpack in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a person in the image?,no,No,No,VERIFICATION: CORRECT,No,Yes,True,True,False,False,False
+Is there a truck in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a chair in the image?,no,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,False,False,False
+Is there a tv in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a bear in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a couch in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a cup in the image?,no,No,No,VERIFICATION: CORRECT,No,Yes,True,True,False,False,False
+Is there a couch in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there an oven in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a dog in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a dining table in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a sports ball in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a backpack in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a bottle in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a couch in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a bench in the image?,yes,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,False,False,True,False,False
+Is there a bowl in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a chair in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a handbag in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a potted plant in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a truck in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a chair in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a refrigerator in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there an airplane in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a sink in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a car in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a baseball glove in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a parking meter in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a bottle in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a frisbee in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a dining table in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a traffic light in the image?,no,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,No,True,False,True,False,False
+Is there a backpack in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a dining table in the image?,yes,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,False,False,True,False,False
+Is there a person in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a skis in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a potted plant in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a cup in the image?,no,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,False,False,False
+Is there a dining table in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a person in the image?,yes,No,No,VERIFICATION: CORRECT,No,Yes,False,False,True,False,True
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a bicycle in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a cup in the image?,no,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,False,False,False,False,False
+Is there a scissors in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a tv in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a dining table in the image?,no,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,False,False,False
+Is there a spoon in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a book in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a bicycle in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a train in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a handbag in the image?,no,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,False,False,False,False,False
+Is there a skateboard in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a cake in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a dog in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a dining table in the image?,yes,No,No,VERIFICATION: CORRECT,No,Yes,False,False,True,False,True
+Is there a cup in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there an orange in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a backpack in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a sink in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a chair in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a vase in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a tennis racket in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a dining table in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a dining table in the image?,no,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,No,True,False,True,False,False
+Is there a couch in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a potted plant in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a car in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a person in the image?,yes,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,False,False,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a train in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a chair in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a handbag in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a dining table in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a teddy bear in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a dining table in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a dining table in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a bowl in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a couch in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a bird in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a bicycle in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a dining table in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a backpack in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a sink in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a tie in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a person in the image?,no,No,No,VERIFICATION: CORRECT,No,Yes,True,True,False,False,False
+Is there a cell phone in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a laptop in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a person in the image?,no,No,No,VERIFICATION: CORRECT,No,Yes,True,True,False,False,False
+Is there a carrot in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a bowl in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a kite in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a bottle in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a stop sign in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a backpack in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a bus in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a tv in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a teddy bear in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a potted plant in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a traffic light in the image?,no,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,No,True,False,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a bottle in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a parking meter in the image?,no,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,False,False,False,True,False
+Is there a chair in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a skis in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a sports ball in the image?,yes,No,No,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,No,False,False,False,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a person in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there an airplane in the imange?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a car in the image?,no,No,No,VERIFICATION: CORRECT,No,Yes,True,True,False,False,False
+Is there a spoon in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a dog in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a bear in the image?,yes,Yes,Yes,VERIFICATION: CORRECT,Yes,Yes,True,True,True,False,False
+Is there a spoon in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there a toothbrush in the image?,no,No,No,VERIFICATION: CORRECT,No,No,True,True,True,False,False
+Is there a bottle in the image?,yes,Yes,Yes,VERIFICATION: INCORRECT,VERIFICATION: INCORRECT,Yes,True,False,True,False,False
+Is there an apple in the image?,yes,No,No,VERIFICATION: CORRECT,No,No,False,False,False,False,True

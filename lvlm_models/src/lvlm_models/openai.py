@@ -31,6 +31,7 @@ class OpenAIVisionModel(BaseLVLMModel):
 
         # Initialize the OpenAI client
         self.client = OpenAI(api_key=self.api_key)
+        self.running_cost = 0.0
 
     def _load_model(self):
         # No local model to load for API-based approach
@@ -127,7 +128,7 @@ class OpenAIVisionModel(BaseLVLMModel):
             )
             input_cost = 0.4e-6 * response.usage.prompt_tokens
             output_cost = 1.6e-6 * response.usage.completion_tokens
-            print(f"Total cost: {(input_cost + output_cost):.6f} USD")
+            self.running_cost += input_cost + output_cost
 
             return response.choices[0].message.content
         except Exception as e:

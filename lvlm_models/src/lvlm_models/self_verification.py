@@ -26,7 +26,7 @@ class SelfVerificationLVLM:
             default)
             verification_prompt: Custom prompt for verification step (if None, uses default)
             reasoning_strategy: Strategy for initial reasoning, options:
-                                "basic", "detailed", "visual_reasoning"
+                                "basic", "detailed", "visual_reasoning", "yes_no_object"
             answer_extraction_format: Format marker to extract final answer
         """
         self.model = base_model
@@ -78,6 +78,29 @@ class SelfVerificationLVLM:
                     "   - Evaluate how well each option aligns with the image and question\n\n"
                     "</strategy>\n" + self.answer_format_instruction
                 )
+            elif reasoning_strategy == "yes_no_object":
+                self.reasoning_prompt = (
+                    "<objective>\n"
+                    "Determine whether the specific object mentioned in the question is present in "
+                    "the image.\n"
+                    "Answer with only 'Yes' or 'No'.\n"
+                    "</objective>\n"
+                    "<strategy>\n"
+                    "Carefully analyze the image to determine if the object is present:\n\n"
+                    "1. OBJECT IDENTIFICATION:\n"
+                    "   - Look for the exact object mentioned in the question\n"
+                    "   - Pay attention to the entire image, including foreground and background\n"
+                    "   - Consider partially visible objects or objects that might be occluded\n\n"
+                    "2. CAREFUL EXAMINATION:\n"
+                    "   - Check for similar-looking objects that might be confused with the "
+                    "target\n"
+                    "   - Consider different perspectives, sizes, and variations of the object\n\n"
+                    "3. VERIFICATION:\n"
+                    "   - Confirm presence or absence with high confidence\n"
+                    "   - Be conservative - only answer 'Yes' if you're certain the object is "
+                    "there\n"
+                    "</strategy>\n" + self.answer_format_instruction
+                )
             else:
                 raise ValueError(f"Unknown reasoning strategy: {reasoning_strategy}")
         else:
@@ -117,7 +140,10 @@ class SelfVerificationLVLM:
         # Step 1: Generate initial reasoning
         reasoning_question = f"{self.reasoning_prompt}\n\nQUESTION: {question}"
         initial_reasoning = self.model.generate_response(
-            image=image, question=reasoning_question, options=options, use_prefix_suffix=False
+            image=image,
+            question=reasoning_question,
+            options=options if self.reasoning_strategy == "visual_reasoning" else None,
+            use_prefix_suffix=False,
         )
         initial_answer = self._extract_answer(initial_reasoning, options)
 
@@ -128,7 +154,10 @@ class SelfVerificationLVLM:
             f"<PREVIOUS RESPONSE>\n{initial_reasoning}\n</PREVIOUS RESPONSE>\n"
         )
         verification = self.model.generate_response(
-            image=image, question=verification_question, options=options, use_prefix_suffix=False
+            image=image,
+            question=verification_question,
+            options=options if self.reasoning_strategy == "visual_reasoning" else None,
+            use_prefix_suffix=False,
         )
 
         # Extract final answer based on verification
@@ -141,7 +170,7 @@ class SelfVerificationLVLM:
 
     def _extract_answer(self, reasoning: str, options: Optional[List[str]] = None) -> str:
         """
-        Extract the final answer from the reasoning.
+        Extract the final answer from the reasoning using a specific format.
 
         Args:
             reasoning: Full reasoning text
@@ -150,8 +179,8 @@ class SelfVerificationLVLM:
         Returns:
             Extracted final answer
         """
-        if self.answer_extraction_format in reasoning:
-            answer_part = reasoning.split(self.answer_extraction_format)[-1].strip()
+        if "FINAL ANSWER:" in reasoning:
+            answer_part = reasoning.split("FINAL ANSWER:")[-1].strip()
             if "." in answer_part:
                 return answer_part.split(".")[0].strip()
             elif "\n" in answer_part:
@@ -160,24 +189,28 @@ class SelfVerificationLVLM:
                 return answer_part.strip()
 
         if options:
-            option_letters = ["A", "B", "C", "D"]
-            for letter in option_letters:
+            option_values = (
+                ["A", "B", "C", "D"]
+                if self.reasoning_strategy == "visual_reasoning"
+                else ["YES", "NO"]
+            )
+            for value in option_values:
                 patterns = [
-                    f"Option {letter}",
-                    f"option {letter}",
-                    f"({letter})",
-                    f"{letter})",
-                    f"answer is {letter}",
-                    f"answer is option {letter}",
-                    f"choose {letter}",
-                    f"select {letter}",
-                    f"answer: {letter}",
-                    f"Answer: {letter}",
-                    f"Answer: ({letter})",
+                    f"Option {value}",
+                    f"option {value}",
+                    f"({value})",
+                    f"{value})",
+                    f"answer is {value}",
+                    f"answer is option {value}",
+                    f"choose {value}",
+                    f"select {value}",
+                    f"answer: {value}",
+                    f"Answer: {value}",
+                    f"Answer: ({value})",
                 ]
                 for pattern in patterns:
                     if pattern in reasoning:
-                        idx = option_letters.index(letter)
+                        idx = option_values.index(value)
                         if idx < len(options):
                             return options[idx]
 
@@ -203,26 +236,30 @@ class SelfVerificationLVLM:
                 answer_part = verification.lower().split(marker)[-1].strip()
                 if answer_part is None:
                     continue
-                answer_letter = answer_part.split(" ")[0].strip()
-                if options is not None and answer_letter in options:
-                    return answer_letter
+                answer_value = answer_part.split(" ")[0].strip()
+                if options is not None and answer_value in options:
+                    return answer_value
                 else:
                     return answer_part.strip()
 
         # Try to find an option letter in the verification
         if options:
-            option_letters = ["A", "B", "C", "D"]
-            for letter in option_letters:
+            option_values = (
+                ["A", "B", "C", "D"]
+                if self.reasoning_strategy == "visual_reasoning"
+                else ["YES", "NO"]
+            )
+            for value in option_values:
                 patterns = [
-                    f"option {letter}",
-                    f"Option {letter}",
-                    f"({letter})",
-                    f"{letter})",
-                    f"should be {letter}",
+                    f"option {value}",
+                    f"Option {value}",
+                    f"({value})",
+                    f"{value})",
+                    f"should be {value}",
                 ]
                 for pattern in patterns:
                     if pattern in verification:
-                        idx = option_letters.index(letter)
+                        idx = option_values.index(value)
                         if idx < len(options):
                             return options[idx]
 
@@ -293,7 +330,10 @@ class SelfVerificationLVLM:
 
         images = dataset["image"]
         questions = dataset["question"]
-        options = dataset["options"]
+        if "options" in dataset:
+            options = dataset["options"]
+        else:
+            options = ["YES", "NO"] * len(dataset)
         answers = dataset["answer"]
 
         # Track all the raw responses
@@ -366,9 +406,9 @@ class SelfVerificationLVLM:
                 responded_answers.append(answer)
 
                 # Calculate correctness (for statistics only)
-                initial_correct = self.match_multiple_choice_answer(initial_answer, answer)
-                verified_correct = self.match_multiple_choice_answer(final_answer, answer)
-                direct_correct = self.match_multiple_choice_answer(direct_response, answer)
+                initial_correct = self.match_multiple_choice_answer(initial_answer, answer, opts)
+                verified_correct = self.match_multiple_choice_answer(final_answer, answer, opts)
+                direct_correct = self.match_multiple_choice_answer(direct_response, answer, opts)
 
                 initial_correct_results.append(initial_correct)
                 verified_correct_results.append(verified_correct)
@@ -424,6 +464,9 @@ class SelfVerificationLVLM:
         print(f"Initial Accuracy (First Pass): {initial_accuracy}")
         print(f"Verified Accuracy (After Verification): {verified_accuracy}")
         print(f"Direct Accuracy (No Verification): {direct_accuracy}")
+        if hasattr(self.model, "running_cost"):
+            print(f"Total cost: {(self.model.running_cost):.6f} USD")
+        print("--------------------------------")
 
         # Return only the raw responses and reasonings in the DataFrame
         return pd.DataFrame(
@@ -435,18 +478,23 @@ class SelfVerificationLVLM:
                 "verification_response": verification_responses,
                 "final_answer": final_answers,
                 "direct_answer": direct_responses,
+                "initial_correct": initial_correct_results,
+                "verified_correct": verified_correct_results,
+                "direct_correct": direct_correct_results,
             }
         )
 
-    def match_multiple_choice_answer(self, model_answer: str, ground_truth: str) -> bool:
+    def match_multiple_choice_answer(
+        self, model_answer: str, ground_truth: str, options: Optional[List[str]] = None
+    ) -> bool:
         """
         Match a model's answer against ground truth for multiple choice questions.
-        Only accepts exact matches of option letters (A, B, C, D) while avoiding
-        false positives from letter occurrences in other contexts.
+        Supports both letter options (A, B, C, D) and YES/NO answers.
 
         Args:
             model_answer: The answer string from the model
-            ground_truth: The ground truth answer (expected to be A, B, C or D)
+            ground_truth: The ground truth answer (expected to be A, B, C, D or YES, NO)
+            options: Optional list of valid options to check against
 
         Returns:
             True if the model's answer matches the ground truth
@@ -454,9 +502,22 @@ class SelfVerificationLVLM:
         if not model_answer or not ground_truth:
             return False
 
-        # Clean and normalize the ground truth
+        # Clean and normalize the answers
+        model_clean = model_answer.strip().upper()
         gt_clean = ground_truth.strip().upper()
-        if gt_clean not in ["A", "B", "C", "D"]:
+
+        # Direct match for simple YES/NO answers
+        if gt_clean in ["YES", "NO"] and model_clean in ["YES", "NO"]:
+            return gt_clean == model_clean
+
+        # Determine valid options based on the ground truth or provided options
+        valid_options = (
+            options
+            if options is not None
+            else (["A", "B", "C", "D"] if gt_clean in ["A", "B", "C", "D"] else ["YES", "NO"])
+        )
+
+        if gt_clean not in valid_options:
             return False
 
         # Use regex to find clear indicators of chosen answers
@@ -471,18 +532,24 @@ class SelfVerificationLVLM:
         ]
 
         for pattern in patterns:
-            if re.search(pattern, model_answer.upper()):
+            if re.search(pattern, model_clean):
                 return True
 
         # Look for the answer at the end of the response
-        last_line = model_answer.strip().split("\n")[-1].strip()
-        if last_line.upper() == gt_clean:
+        last_line = model_clean.split("\n")[-1].strip()
+        if last_line == gt_clean:
             return True
 
         # If "FINAL ANSWER:" format is used
-        if "FINAL ANSWER:" in model_answer.upper():
-            final_part = model_answer.upper().split("FINAL ANSWER:")[-1].strip()
-            words = re.findall(r"\b[A-D]\b", final_part)
+        if "FINAL ANSWER:" in model_clean:
+            final_part = model_clean.split("FINAL ANSWER:")[-1].strip()
+
+            # Create regex pattern based on valid options
+            if "YES" in valid_options and "NO" in valid_options:
+                words = re.findall(r"\b(YES|NO)\b", final_part)
+            else:  # A, B, C, D options
+                words = re.findall(r"\b[A-D]\b", final_part)
+
             return bool(words and words[0] == gt_clean)
 
         return False
