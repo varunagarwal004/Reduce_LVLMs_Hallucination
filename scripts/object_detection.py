@@ -150,7 +150,7 @@ def run_chain_of_thought(
     """Run evaluation using chain-of-thought strategy."""
     cot_model = ChainOfThoughtLVLM(
         base_model=model,
-        cot_strategy="object_verification",
+        cot_strategy="yes_no_object",
     )
 
     results_df = cot_model.evaluate_dataset_with_cot(

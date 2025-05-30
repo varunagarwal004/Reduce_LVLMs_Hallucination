@@ -303,9 +303,11 @@ class ChainOfThoughtLVLM:
             for j, ((reasoning, final_answer), direct_response) in enumerate(
                 zip(batch_cot_responses, batch_direct_responses)
             ):
-                correct_cot = self.match_multiple_choice_answer(final_answer, batch_answers[j])
+                correct_cot = self.match_multiple_choice_answer(
+                    final_answer, batch_answers[j], batch_options
+                )
                 correct_direct = self.match_multiple_choice_answer(
-                    direct_response, batch_answers[j]
+                    direct_response, batch_answers[j], batch_options
                 )
 
                 cot_results.append(correct_cot)
@@ -416,8 +418,8 @@ class ChainOfThoughtLVLM:
                 print(f"Failed to generate direct response for question {i}: {question}\n\n{e}\n")
                 continue
 
-            correct_cot = self.match_multiple_choice_answer(cot_answer, answer)
-            correct_direct = self.match_multiple_choice_answer(direct_response, answer)
+            correct_cot = self.match_multiple_choice_answer(cot_answer, answer, options)
+            correct_direct = self.match_multiple_choice_answer(direct_response, answer, options)
 
             cot_results.append(correct_cot)
             direct_results.append(correct_direct)
@@ -496,20 +498,24 @@ class ChainOfThoughtLVLM:
 
         if answer is not None:
             result["ground_truth"] = answer
-            result["cot_correct"] = self.match_multiple_choice_answer(final_answer, answer)
-            result["direct_correct"] = self.match_multiple_choice_answer(direct_response, answer)
+            result["cot_correct"] = self.match_multiple_choice_answer(final_answer, answer, options)
+            result["direct_correct"] = self.match_multiple_choice_answer(
+                direct_response, answer, options
+            )
 
         return result
 
-    def match_multiple_choice_answer(self, model_answer: str, ground_truth: str) -> bool:
+    def match_multiple_choice_answer(
+        self, model_answer: str, ground_truth: str, options: Optional[List[str]] = None
+    ) -> bool:
         """
         Match a model's answer against ground truth for multiple choice questions.
-        Only accepts exact matches of option letters (A, B, C, D) while avoiding
-        false positives from letter occurrences in other contexts.
+        Supports both letter options (A, B, C, D) and YES/NO answers.
 
         Args:
             model_answer: The answer string from the model
-            ground_truth: The ground truth answer (expected to be A, B, C or D)
+            ground_truth: The ground truth answer (expected to be A, B, C, D or YES, NO)
+            options: Optional list of valid options to check against
 
         Returns:
             True if the model's answer matches the ground truth
@@ -517,9 +523,22 @@ class ChainOfThoughtLVLM:
         if not model_answer or not ground_truth:
             return False
 
-        # Clean and normalize the ground truth
+        # Clean and normalize the answers
+        model_clean = model_answer.strip().upper()
         gt_clean = ground_truth.strip().upper()
-        if gt_clean not in ["A", "B", "C", "D"]:
+
+        # Direct match for simple YES/NO answers
+        if gt_clean in ["YES", "NO"] and model_clean in ["YES", "NO"]:
+            return gt_clean == model_clean
+
+        # Determine valid options based on the ground truth or provided options
+        valid_options = (
+            options
+            if options is not None
+            else (["A", "B", "C", "D"] if gt_clean in ["A", "B", "C", "D"] else ["YES", "NO"])
+        )
+
+        if gt_clean not in valid_options:
             return False
 
         # Use regex to find clear indicators of chosen answers
@@ -534,18 +553,24 @@ class ChainOfThoughtLVLM:
         ]
 
         for pattern in patterns:
-            if re.search(pattern, model_answer.upper()):
+            if re.search(pattern, model_clean):
                 return True
 
         # Look for the answer at the end of the response
-        last_line = model_answer.strip().split("\n")[-1].strip()
-        if last_line.upper() == gt_clean:
+        last_line = model_clean.split("\n")[-1].strip()
+        if last_line == gt_clean:
             return True
 
         # If "FINAL ANSWER:" format is used
-        if "FINAL ANSWER:" in model_answer.upper():
-            final_part = model_answer.upper().split("FINAL ANSWER:")[-1].strip()
-            words = re.findall(r"\b[A-D]\b", final_part)
+        if "FINAL ANSWER:" in model_clean:
+            final_part = model_clean.split("FINAL ANSWER:")[-1].strip()
+
+            # Create regex pattern based on valid options
+            if "YES" in valid_options and "NO" in valid_options:
+                words = re.findall(r"\b(YES|NO)\b", final_part)
+            else:  # A, B, C, D options
+                words = re.findall(r"\b[A-D]\b", final_part)
+
             return bool(words and words[0] == gt_clean)
 
         return False

@@ -406,9 +406,9 @@ class SelfVerificationLVLM:
                 responded_answers.append(answer)
 
                 # Calculate correctness (for statistics only)
-                initial_correct = self.match_multiple_choice_answer(initial_answer, answer)
-                verified_correct = self.match_multiple_choice_answer(final_answer, answer)
-                direct_correct = self.match_multiple_choice_answer(direct_response, answer)
+                initial_correct = self.match_multiple_choice_answer(initial_answer, answer, opts)
+                verified_correct = self.match_multiple_choice_answer(final_answer, answer, opts)
+                direct_correct = self.match_multiple_choice_answer(direct_response, answer, opts)
 
                 initial_correct_results.append(initial_correct)
                 verified_correct_results.append(verified_correct)
@@ -478,18 +478,23 @@ class SelfVerificationLVLM:
                 "verification_response": verification_responses,
                 "final_answer": final_answers,
                 "direct_answer": direct_responses,
+                "initial_correct": initial_correct_results,
+                "verified_correct": verified_correct_results,
+                "direct_correct": direct_correct_results,
             }
         )
 
-    def match_multiple_choice_answer(self, model_answer: str, ground_truth: str) -> bool:
+    def match_multiple_choice_answer(
+        self, model_answer: str, ground_truth: str, options: Optional[List[str]] = None
+    ) -> bool:
         """
         Match a model's answer against ground truth for multiple choice questions.
-        Only accepts exact matches of option letters (A, B, C, D) while avoiding
-        false positives from letter occurrences in other contexts.
+        Supports both letter options (A, B, C, D) and YES/NO answers.
 
         Args:
             model_answer: The answer string from the model
-            ground_truth: The ground truth answer (expected to be A, B, C or D)
+            ground_truth: The ground truth answer (expected to be A, B, C, D or YES, NO)
+            options: Optional list of valid options to check against
 
         Returns:
             True if the model's answer matches the ground truth
@@ -497,9 +502,22 @@ class SelfVerificationLVLM:
         if not model_answer or not ground_truth:
             return False
 
-        # Clean and normalize the ground truth
+        # Clean and normalize the answers
+        model_clean = model_answer.strip().upper()
         gt_clean = ground_truth.strip().upper()
-        if gt_clean not in ["A", "B", "C", "D"]:
+
+        # Direct match for simple YES/NO answers
+        if gt_clean in ["YES", "NO"] and model_clean in ["YES", "NO"]:
+            return gt_clean == model_clean
+
+        # Determine valid options based on the ground truth or provided options
+        valid_options = (
+            options
+            if options is not None
+            else (["A", "B", "C", "D"] if gt_clean in ["A", "B", "C", "D"] else ["YES", "NO"])
+        )
+
+        if gt_clean not in valid_options:
             return False
 
         # Use regex to find clear indicators of chosen answers
@@ -514,18 +532,24 @@ class SelfVerificationLVLM:
         ]
 
         for pattern in patterns:
-            if re.search(pattern, model_answer.upper()):
+            if re.search(pattern, model_clean):
                 return True
 
         # Look for the answer at the end of the response
-        last_line = model_answer.strip().split("\n")[-1].strip()
-        if last_line.upper() == gt_clean:
+        last_line = model_clean.split("\n")[-1].strip()
+        if last_line == gt_clean:
             return True
 
         # If "FINAL ANSWER:" format is used
-        if "FINAL ANSWER:" in model_answer.upper():
-            final_part = model_answer.upper().split("FINAL ANSWER:")[-1].strip()
-            words = re.findall(r"\b[A-D]\b", final_part)
+        if "FINAL ANSWER:" in model_clean:
+            final_part = model_clean.split("FINAL ANSWER:")[-1].strip()
+
+            # Create regex pattern based on valid options
+            if "YES" in valid_options and "NO" in valid_options:
+                words = re.findall(r"\b(YES|NO)\b", final_part)
+            else:  # A, B, C, D options
+                words = re.findall(r"\b[A-D]\b", final_part)
+
             return bool(words and words[0] == gt_clean)
 
         return False
