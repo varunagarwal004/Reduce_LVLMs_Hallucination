@@ -1,4 +1,4 @@
-"""Script to run visual puzzle evaluations using different reasoning strategies."""
+"""Script to evaluate object hallucination using the POPE dataset."""
 
 import gc
 import os
@@ -25,72 +25,57 @@ class Strategy(str, Enum):
 
     SELF_VERIFICATION = "sv"
     CHAIN_OF_THOUGHT = "cot"
-    BOTH = "both"
+    ALL = "all"
 
 
 def setup_model(model_name: str) -> BaseLVLMModel:
-    """Initialize and return the base LlavaModel."""
+    """Initialize and return the specified model."""
     load_dotenv()
+
+    system_prompt = (
+        "<role>\n"
+        "You are a helpful visual assistant that can accurately identify "
+        "objects in images.\n"
+        "</role>"
+    )
+
+    prompt_prefix = (
+        "Look at the image carefully and determine whether the object mentioned "
+        "in the question is present in the image."
+    )
+
+    prompt_suffix = "Answer with only 'yes' or 'no', nothing else."
+
     if model_name == "llava":
         return LlavaModel(
             model_name="llava-hf/llava-1.5-7b-hf",
             hf_token=os.getenv("HF_TOKEN"),
-            system_prompt=(
-                "<role>\n"
-                "You are a helpful visual assistant that can solve visual puzzles and "
-                "reasoning tasks.\n"
-                "</role>"
-            ),
-            prompt_prefix=(
-                "Analyze this visual puzzle in the image and answer the following question:"
-            ),
-            prompt_suffix=(
-                "Choose the best answer from the provided options.\n"
-                "Respond only with the letter of the correct option, no extra text or punctuation."
-            ),
+            system_prompt=system_prompt,
+            prompt_prefix=prompt_prefix,
+            prompt_suffix=prompt_suffix,
         )
     elif model_name == "gemma3":
         return Gemma3Model(
             model_name="google/gemma-3-4b-it",
             hf_token=os.getenv("HF_TOKEN"),
-            system_prompt=(
-                "<role>\n"
-                "You are a helpful visual assistant that can solve visual puzzles and "
-                "reasoning tasks.\n"
-                "</role>"
-            ),
-            prompt_prefix=(
-                "Analyze this visual puzzle in the image and answer the following question:"
-            ),
-            prompt_suffix=(
-                "Choose the best answer from the provided options.\n"
-                "Respond only with the letter of the correct option, no extra text or punctuation."
-            ),
+            system_prompt=system_prompt,
+            prompt_prefix=prompt_prefix,
+            prompt_suffix=prompt_suffix,
         )
     elif model_name == "openai":
         return OpenAIVisionModel(
             model_name="gpt-4.1-mini-2025-04-14",
             api_key=os.getenv("OPENAI_API_KEY"),
-            system_prompt=(
-                "<role>\n"
-                "You are a helpful visual assistant that can solve visual puzzles and "
-                "reasoning tasks.\n"
-                "</role>"
-            ),
-            prompt_prefix=(
-                "Analyze this visual puzzle in the image and answer the following question:"
-            ),
-            prompt_suffix=(
-                "Choose the best answer from the provided options.\n"
-                "Respond only with the letter of the correct option, no extra text or punctuation."
-            ),
+            system_prompt=system_prompt,
+            prompt_prefix=prompt_prefix,
+            prompt_suffix=prompt_suffix,
         )
     else:
         raise ValueError(f"Model {model_name} not supported")
 
 
 def cleanup_model(
-    model: Optional[LlavaModel] = None,
+    model: Optional[BaseLVLMModel] = None,
     sv_model: Optional[SelfVerificationLVLM] = None,
     cot_model: Optional[ChainOfThoughtLVLM] = None,
 ) -> None:
@@ -118,11 +103,11 @@ def run_self_verification(
     """Run evaluation using self-verification strategy."""
     sv_model = SelfVerificationLVLM(
         base_model=model,
-        reasoning_strategy="visual_reasoning",
+        reasoning_strategy="yes_no_object",
     )
 
     results_df = sv_model.evaluate_dataset_with_sv(
-        dataset_name="neulab/VisualPuzzles",
+        dataset_name="lmms-lab/POPE",
         split=split,
         amount=amount,
         batch_size=batch_size,
@@ -131,9 +116,25 @@ def run_self_verification(
         verbose=verbose,
     )
 
+    # Add additional metrics specific to object hallucination
+    results_df["false_positive"] = (results_df["final_answer"].str.strip().str.lower() == "yes") & (
+        results_df["answer"].str.strip().str.lower() == "no"
+    )
+    results_df["false_negative"] = (results_df["final_answer"].str.strip().str.lower() == "no") & (
+        results_df["answer"].str.strip().str.lower() == "yes"
+    )
+
+    hallucination_rate = results_df["false_positive"].mean()
+    miss_rate = results_df["false_negative"].mean()
+
+    print(f"Accuracy: {results_df['verified_correct'].mean():.4f}")
+    print(f"Hallucination rate: {hallucination_rate:.4f}")
+    print(f"Miss rate: {miss_rate:.4f}")
+
     results_df.to_csv(
         output_path / f"{model.model_name.split('/')[-1]}_{amount}_sv_results.csv", index=False
     )
+
     cleanup_model(sv_model=sv_model)
 
 
@@ -149,11 +150,11 @@ def run_chain_of_thought(
     """Run evaluation using chain-of-thought strategy."""
     cot_model = ChainOfThoughtLVLM(
         base_model=model,
-        cot_strategy="visual_puzzle",
+        cot_strategy="yes_no_object",
     )
 
     results_df = cot_model.evaluate_dataset_with_cot(
-        dataset_name="neulab/VisualPuzzles",
+        dataset_name="lmms-lab/POPE",
         split=split,
         amount=amount,
         rand=rand,
@@ -161,9 +162,25 @@ def run_chain_of_thought(
         verbose=verbose,
     )
 
+    # Add additional metrics specific to object hallucination
+    results_df["false_positive"] = (results_df["cot_answer"].str.strip().str.lower() == "yes") & (
+        results_df["answer"].str.strip().str.lower() == "no"
+    )
+    results_df["false_negative"] = (results_df["cot_answer"].str.strip().str.lower() == "no") & (
+        results_df["answer"].str.strip().str.lower() == "yes"
+    )
+
+    hallucination_rate = results_df["false_positive"].mean()
+    miss_rate = results_df["false_negative"].mean()
+
+    print(f"Accuracy: {results_df['cot_correct'].mean():.4f}")
+    print(f"Hallucination rate: {hallucination_rate:.4f}")
+    print(f"Miss rate: {miss_rate:.4f}")
+
     results_df.to_csv(
         output_path / f"{model.model_name.split('/')[-1]}_{amount}_cot_results.csv", index=False
     )
+
     cleanup_model(cot_model=cot_model)
 
 
@@ -173,22 +190,22 @@ def evaluate(
         "llava",
         "--model",
         "-m",
-        help="Model to use",
+        help="Model to use (llava, gemma3, openai)",
     ),
     strategy: Strategy = typer.Option(
-        Strategy.BOTH,
+        Strategy.ALL,
         "--strategy",
         "-s",
-        help="Evaluation strategy to use (sv, cot, or both)",
+        help="Evaluation strategy to use (direct, sv, cot, or all)",
     ),
     output_dir: str = typer.Option(
-        "results_puzzles",
+        "results_pope",
         "--output-dir",
         "-o",
         help="Directory to save results",
     ),
     split: str = typer.Option(
-        "train",
+        "test",
         "--split",
         help="Dataset split to use",
     ),
@@ -196,13 +213,13 @@ def evaluate(
         100,
         "--amount",
         "-n",
-        help="Number of examples to evaluate",
+        help="Number of examples to evaluate (max per category)",
     ),
     batch_size: int = typer.Option(
         1,
         "--batch-size",
         "-b",
-        help="Batch size for evaluation (only used for self-verification)",
+        help="Batch size for evaluation (only used for direct evaluation)",
     ),
     random: bool = typer.Option(
         True,
@@ -222,14 +239,14 @@ def evaluate(
         help="Whether to print verbose output",
     ),
 ) -> None:
-    """Run visual puzzle evaluations using specified strategy."""
+    """Run POPE object hallucination evaluations using specified strategy."""
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
     model = setup_model(model_name)
 
     try:
-        if strategy in (Strategy.SELF_VERIFICATION, Strategy.BOTH):
+        if strategy in (Strategy.SELF_VERIFICATION, Strategy.ALL):
             typer.echo("Running self-verification evaluation...")
             run_self_verification(
                 model=model,
@@ -242,7 +259,7 @@ def evaluate(
                 verbose=verbose,
             )
 
-        if strategy in (Strategy.CHAIN_OF_THOUGHT, Strategy.BOTH):
+        if strategy in (Strategy.CHAIN_OF_THOUGHT, Strategy.ALL):
             typer.echo("Running chain-of-thought evaluation...")
             run_chain_of_thought(
                 model=model,

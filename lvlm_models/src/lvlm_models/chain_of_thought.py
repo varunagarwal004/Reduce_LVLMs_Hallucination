@@ -25,7 +25,7 @@ class ChainOfThoughtLVLM:
             strategy-specific default)
             answer_extraction_prompt: Prompt to extract final answer
             cot_strategy: Strategy for chain of thought, options:
-                          "basic", "detailed", "visual_puzzle"
+                          "basic", "detailed", "visual_puzzle", "yes_no_object"
         """
         self.model = base_model
         self.answer_extraction_prompt = answer_extraction_prompt
@@ -80,6 +80,29 @@ class ChainOfThoughtLVLM:
                     "patterns\n"
                     "</strategy>\n" + self.answer_format_instruction
                 )
+            elif cot_strategy == "yes_no_object":
+                self.cot_prompt = (
+                    "<objective>\n"
+                    "Determine whether the specific object mentioned in the question is present in "
+                    "the image.\n"
+                    "Answer with only 'YES' or 'NO'.\n"
+                    "</objective>\n"
+                    "<strategy>\n"
+                    "Carefully analyze the image to determine if the object is present:\n\n"
+                    "1. OBJECT IDENTIFICATION:\n"
+                    "   - Look for the exact object mentioned in the question\n"
+                    "   - Pay attention to the entire image, including foreground and background\n"
+                    "   - Consider partially visible objects or objects that might be occluded\n\n"
+                    "2. CAREFUL EXAMINATION:\n"
+                    "   - Check for similar-looking objects that might be confused with the "
+                    "target\n"
+                    "   - Consider different perspectives, sizes, and variations of the object\n\n"
+                    "3. VERIFICATION:\n"
+                    "   - Confirm presence or absence with high confidence\n"
+                    "   - Be conservative - only answer 'YES' if you're certain the object is "
+                    "there\n"
+                    "</strategy>\n" + self.answer_format_instruction
+                )
             else:
                 raise ValueError(f"Unknown CoT strategy: {cot_strategy}")
         else:
@@ -103,7 +126,10 @@ class ChainOfThoughtLVLM:
         cot_question = f"{self.cot_prompt}\n\n<QUESTION>\n{question}\n</QUESTION>"
 
         reasoning = self.model.generate_response(
-            image=image, question=cot_question, options=options, use_prefix_suffix=False
+            image=image,
+            question=cot_question,
+            options=options if self.cot_strategy == "visual_puzzle" else None,
+            use_prefix_suffix=False,
         )
 
         final_answer = self._extract_answer(reasoning, options)
@@ -131,24 +157,26 @@ class ChainOfThoughtLVLM:
                 return answer_part.strip()
 
         if options:
-            option_letters = ["A", "B", "C", "D"]
-            for letter in option_letters:
+            option_values = (
+                ["A", "B", "C", "D"] if self.cot_strategy == "visual_puzzle" else ["YES", "NO"]
+            )
+            for value in option_values:
                 patterns = [
-                    f"Option {letter}",
-                    f"option {letter}",
-                    f"({letter})",
-                    f"{letter})",
-                    f"answer is {letter}",
-                    f"answer is option {letter}",
-                    f"choose {letter}",
-                    f"select {letter}",
-                    f"answer: {letter}",
-                    f"Answer: {letter}",
-                    f"Answer: ({letter})",
+                    f"Option {value}",
+                    f"option {value}",
+                    f"({value})",
+                    f"{value})",
+                    f"answer is {value}",
+                    f"answer is option {value}",
+                    f"choose {value}",
+                    f"select {value}",
+                    f"answer: {value}",
+                    f"Answer: {value}",
+                    f"Answer: ({value})",
                 ]
                 for pattern in patterns:
                     if pattern in reasoning:
-                        idx = option_letters.index(letter)
+                        idx = option_values.index(value)
                         if idx < len(options):
                             return options[idx]
 
@@ -175,7 +203,10 @@ class ChainOfThoughtLVLM:
         cot_questions = [f"{question}\n\n{self.cot_prompt}" for question in questions]
 
         reasonings = self.model.generate_response_batch(
-            images=images, questions=cot_questions, options=options, use_prefix_suffix=False
+            images=images,
+            questions=cot_questions,
+            options=options if self.cot_strategy == "visual_puzzle" else None,
+            use_prefix_suffix=False,
         )
 
         results = []
@@ -221,7 +252,10 @@ class ChainOfThoughtLVLM:
 
         images = dataset["image"]
         questions = dataset["question"]
-        options = dataset["options"]
+        if "options" in dataset:
+            options = dataset["options"]
+        else:
+            options = ["YES", "NO"] * len(dataset)
         answers = dataset["answer"]
 
         cot_results = []
@@ -269,9 +303,11 @@ class ChainOfThoughtLVLM:
             for j, ((reasoning, final_answer), direct_response) in enumerate(
                 zip(batch_cot_responses, batch_direct_responses)
             ):
-                correct_cot = self.match_multiple_choice_answer(final_answer, batch_answers[j])
+                correct_cot = self.match_multiple_choice_answer(
+                    final_answer, batch_answers[j], batch_options
+                )
                 correct_direct = self.match_multiple_choice_answer(
-                    direct_response, batch_answers[j]
+                    direct_response, batch_answers[j], batch_options
                 )
 
                 cot_results.append(correct_cot)
@@ -344,7 +380,10 @@ class ChainOfThoughtLVLM:
 
         images = dataset["image"]
         questions = dataset["question"]
-        options = dataset["options"]
+        if "options" in dataset:
+            options = dataset["options"]
+        else:
+            options = ["YES", "NO"] * len(dataset)
         answers = dataset["answer"]
 
         cot_results = []
@@ -379,8 +418,8 @@ class ChainOfThoughtLVLM:
                 print(f"Failed to generate direct response for question {i}: {question}\n\n{e}\n")
                 continue
 
-            correct_cot = self.match_multiple_choice_answer(cot_answer, answer)
-            correct_direct = self.match_multiple_choice_answer(direct_response, answer)
+            correct_cot = self.match_multiple_choice_answer(cot_answer, answer, options)
+            correct_direct = self.match_multiple_choice_answer(direct_response, answer, options)
 
             cot_results.append(correct_cot)
             direct_results.append(correct_direct)
@@ -409,6 +448,8 @@ class ChainOfThoughtLVLM:
         print("--------------------------------")
         print(f"CoT Accuracy: {cot_accuracy}")
         print(f"Direct Accuracy: {direct_accuracy}")
+        if hasattr(self.model, "running_cost"):
+            print(f"Total cost: {(self.model.running_cost):.6f} USD")
         print("--------------------------------")
 
         return pd.DataFrame(
@@ -457,20 +498,24 @@ class ChainOfThoughtLVLM:
 
         if answer is not None:
             result["ground_truth"] = answer
-            result["cot_correct"] = self.match_multiple_choice_answer(final_answer, answer)
-            result["direct_correct"] = self.match_multiple_choice_answer(direct_response, answer)
+            result["cot_correct"] = self.match_multiple_choice_answer(final_answer, answer, options)
+            result["direct_correct"] = self.match_multiple_choice_answer(
+                direct_response, answer, options
+            )
 
         return result
 
-    def match_multiple_choice_answer(self, model_answer: str, ground_truth: str) -> bool:
+    def match_multiple_choice_answer(
+        self, model_answer: str, ground_truth: str, options: Optional[List[str]] = None
+    ) -> bool:
         """
         Match a model's answer against ground truth for multiple choice questions.
-        Only accepts exact matches of option letters (A, B, C, D) while avoiding
-        false positives from letter occurrences in other contexts.
+        Supports both letter options (A, B, C, D) and YES/NO answers.
 
         Args:
             model_answer: The answer string from the model
-            ground_truth: The ground truth answer (expected to be A, B, C or D)
+            ground_truth: The ground truth answer (expected to be A, B, C, D or YES, NO)
+            options: Optional list of valid options to check against
 
         Returns:
             True if the model's answer matches the ground truth
@@ -478,9 +523,22 @@ class ChainOfThoughtLVLM:
         if not model_answer or not ground_truth:
             return False
 
-        # Clean and normalize the ground truth
+        # Clean and normalize the answers
+        model_clean = model_answer.strip().upper()
         gt_clean = ground_truth.strip().upper()
-        if gt_clean not in ["A", "B", "C", "D"]:
+
+        # Direct match for simple YES/NO answers
+        if gt_clean in ["YES", "NO"] and model_clean in ["YES", "NO"]:
+            return gt_clean == model_clean
+
+        # Determine valid options based on the ground truth or provided options
+        valid_options = (
+            options
+            if options is not None
+            else (["A", "B", "C", "D"] if gt_clean in ["A", "B", "C", "D"] else ["YES", "NO"])
+        )
+
+        if gt_clean not in valid_options:
             return False
 
         # Use regex to find clear indicators of chosen answers
@@ -495,18 +553,24 @@ class ChainOfThoughtLVLM:
         ]
 
         for pattern in patterns:
-            if re.search(pattern, model_answer.upper()):
+            if re.search(pattern, model_clean):
                 return True
 
         # Look for the answer at the end of the response
-        last_line = model_answer.strip().split("\n")[-1].strip()
-        if last_line.upper() == gt_clean:
+        last_line = model_clean.split("\n")[-1].strip()
+        if last_line == gt_clean:
             return True
 
         # If "FINAL ANSWER:" format is used
-        if "FINAL ANSWER:" in model_answer.upper():
-            final_part = model_answer.upper().split("FINAL ANSWER:")[-1].strip()
-            words = re.findall(r"\b[A-D]\b", final_part)
+        if "FINAL ANSWER:" in model_clean:
+            final_part = model_clean.split("FINAL ANSWER:")[-1].strip()
+
+            # Create regex pattern based on valid options
+            if "YES" in valid_options and "NO" in valid_options:
+                words = re.findall(r"\b(YES|NO)\b", final_part)
+            else:  # A, B, C, D options
+                words = re.findall(r"\b[A-D]\b", final_part)
+
             return bool(words and words[0] == gt_clean)
 
         return False
