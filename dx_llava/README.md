@@ -44,14 +44,14 @@ For a detailed walkthrough of the implementation, please refer to the [DINO-LLaV
 
 1. Install required packages:
 ```bash
-pip install -r DX&LLaVA_requirements.txt
+pip install -r DX_LLaVA_requirements.txt
 ```
 
 ### Usage
 
 1. Start the application:
 ```bash
-python DX&LLaVA_main.py
+python DX_LLaVA_main.py
 ```
 
 2. When prompted, enter your DINO-X API key
