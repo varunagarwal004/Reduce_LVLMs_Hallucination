@@ -150,7 +150,7 @@ def single_model_tab():
 
     if uploaded_file:
         image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_container_width=True)
+        st.image(image, caption="Uploaded Image", width=600)
 
     prompt = st.text_area("Enter your prompt", height=100)
 
@@ -223,9 +223,7 @@ def compare_models_tab():
 
     if uploaded_file:
         image = Image.open(uploaded_file)
-        col1, col2 = st.columns([1, 2])
-        with col1:
-            st.image(image, caption="Uploaded Image", use_column_width=True)
+        st.image(image, caption="Uploaded Image", width=600)
 
     prompt = st.text_area("Enter your prompt", height=100, key="compare_prompt")
 
@@ -281,11 +279,12 @@ def compare_models_tab():
             device = "cuda" if torch.cuda.is_available() else "cpu"
             st.info(f"Using device: {device}")
 
-            # Create tabs for all models
-            model_tabs = st.tabs(list(model_options.values()))
+            # Create columns for all models
+            cols = st.columns(3)
 
             for i, (model_name, model_display_name) in enumerate(model_options.items()):
-                with model_tabs[i]:
+                with cols[i]:
+                    st.subheader(model_display_name)
                     base_model = None
                     cot_model = None
                     sv_model = None
@@ -304,11 +303,11 @@ def compare_models_tab():
                                 )
 
                                 with st.container():
-                                    st.subheader("Reasoning")
+                                    st.markdown("**Reasoning:**")
                                     st.write(reasoning)
 
                                 with st.container():
-                                    st.subheader("Final Answer")
+                                    st.markdown("**Final Answer:**")
                                     st.write(final_answer)
 
                             elif reasoning_approach == "Self Verification":
@@ -322,15 +321,15 @@ def compare_models_tab():
                                 )
 
                                 with st.container():
-                                    st.subheader("Initial Reasoning")
+                                    st.markdown("**Initial Reasoning:**")
                                     st.write(initial_reasoning)
 
                                 with st.container():
-                                    st.subheader("Verification")
+                                    st.markdown("**Verification:**")
                                     st.write(verification)
 
                                 with st.container():
-                                    st.subheader("Final Answer")
+                                    st.markdown("**Final Answer:**")
                                     st.write(final_answer)
                     finally:
                         cleanup_model(model=base_model, cot_model=cot_model, sv_model=sv_model)
@@ -341,7 +340,8 @@ def compare_models_tab():
 
 def main():
     """Main function to run the Streamlit app."""
-    st.title("Visual Language Model Explorer")
+    st.set_page_config(layout="wide")
+    st.title("Language-based Hallucination Reduction")
 
     tab1, tab2 = st.tabs(["Single Model", "Compare All Models"])
 
