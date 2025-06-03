@@ -230,6 +230,22 @@ class SelfVerificationLVLM:
         Returns:
             Extracted correct answer
         """
+        # Check for "CORRECT ANSWER: X" pattern first (most common in verification responses)
+        if "CORRECT ANSWER:" in verification:
+            answer_part = verification.split("CORRECT ANSWER:")[-1].strip()
+            first_word = answer_part.split(" ")[0].strip()
+
+            # If the answer is a single letter option (A, B, C, D), return the corresponding option
+            if first_word.upper() in ["A", "B", "C", "D"] and options:
+                option_values = ["A", "B", "C", "D"]
+                idx = option_values.index(first_word.upper())
+                if idx < len(options):
+                    return options[idx]
+
+            # Otherwise return just the first word as the answer
+            return first_word
+
+        # Check for other common markers
         answer_markers = ["correct answer is", "correct answer:", "correct answer"]
         for marker in answer_markers:
             if marker in verification.lower():
@@ -240,7 +256,7 @@ class SelfVerificationLVLM:
                 if options is not None and answer_value in options:
                     return answer_value
                 else:
-                    return answer_part.strip()
+                    return answer_value
 
         # Try to find an option letter in the verification
         if options:
