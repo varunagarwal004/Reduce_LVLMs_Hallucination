@@ -23,7 +23,7 @@ The final evaluation results demonstrate the enhanced performance of the DINO-X 
 The chart shows the accuracy improvements achieved through the DINO-X enhanced prompting approach across different question types and image categories.
 
 
-For a detailed walkthrough of the implementation, please refer to the [DINO-LLaVA Demo Notebook](DINO-DINOX-Llava_Experimentation.ipynb). (NOTE: the notebook was not able to get rendered on Github. It is recommended to use Colab to run the notebook.
+For a detailed walkthrough of the implementation, please refer to the [DINO-LLaVA Demo Notebook](DINO-DINOX-Llava_Experimentation.ipynb). (NOTE: the notebook was not able to get rendered on Github. It is recommended to use Colab to run the notebook.)
 
 
 ## A Demo of the enhanced LVLM using Gradio App
