@@ -1,4 +1,4 @@
-[![Open in Github](assets\githublogo.svg)](https://github.com/AndyGongDS/Reduce_LVLMs_Hallucination)
+[![Open in Github](assets\github-mark.svg)](https://github.com/AndyGongDS/Reduce_LVLMs_Hallucination)
 
 # Reducing Hallucinations in Large Vision-Language Models
 
