@@ -1,5 +1,6 @@
-**Open in Github**<a href="https://github.com/AndyGongDS/Reduce_LVLMs_Hallucination" target="_blank">
-  <img src="assets/github-mark.svg" alt="GitHub Logo" width="100"/>
+<a href="https://github.com/AndyGongDS/Reduce_LVLMs_Hallucination" target="_blank" style="display: inline-flex; align-items: center; text-decoration: none;">
+  <img src="assets/github-mark.svg" alt="GitHub Logo" width="30" style="margin-right: 8px;">
+  <span style="font-weight: bold; color: black;">Open in GitHub</span>
 </a>
 
 # Reducing Hallucinations in Large Vision-Language Models
