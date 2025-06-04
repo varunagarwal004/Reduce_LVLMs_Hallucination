@@ -1,4 +1,6 @@
-[![Open in Github](assets\github-mark.svg)](https://github.com/AndyGongDS/Reduce_LVLMs_Hallucination)
+**Open in Github**<a href="https://github.com/AndyGongDS/Reduce_LVLMs_Hallucination" target="_blank">
+  <img src="assets/github-mark.svg" alt="GitHub Logo" width="100"/>
+</a>
 
 # Reducing Hallucinations in Large Vision-Language Models
 
