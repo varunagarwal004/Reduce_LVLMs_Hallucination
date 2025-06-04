@@ -1,9 +1,6 @@
 .env
 .venv
 
-*.jpg
-*.png
-
 __pycache__/*
 # Python
 *.py[cod]

@@ -1,3 +1,5 @@
+[![Open in Github](\assets\githublogo.svg)](https://github.com/AndyGongDS/Reduce_LVLMs_Hallucination)
+
 # Reducing Hallucinations in Large Vision-Language Models
 
 This research project explores techniques to reduce hallucinations in Large Vision-Language Models (LVLMs) through two main approaches:
