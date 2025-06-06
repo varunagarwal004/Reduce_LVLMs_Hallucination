@@ -14,6 +14,10 @@ This research project explores techniques to reduce hallucinations in Large Visi
 
 Large Vision-Language Models have shown impressive capabilities in multimodal tasks but often suffer from hallucinations - generating facts or objects not present in the images they analyze. This project implements and evaluates multiple approaches to reduce these hallucinations.
 
+## Video Presentation
+
+You can watch our project presentation video [here](https://drive.google.com/file/d/1L6_K2ueN_CX9_t2ZzM8VXf-eaWSM8vK6/view?usp=sharing).
+
 ## Approaches
 
 ### Object Detection Integration
